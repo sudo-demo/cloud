@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.system.mapper.SystemRoleApiMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.system.domain.SystemRoleApi">
+            <result property="roleApiId" column="role_api_id" jdbcType="BIGINT"/>
+            <result property="apiId" column="api_id" jdbcType="BIGINT"/>
+            <result property="dataScope" column="data_scope" jdbcType="VARCHAR"/>
+            <result property="operatingStatus" column="operating_status" jdbcType="VARCHAR"/>
+            <result property="dataKey" column="data_key" jdbcType="VARCHAR"/>
+            <result property="roleId" column="role_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        role_api_id,api_id,data_scope,
+        operating_status,data_key,role_id
+    </sql>
+</mapper>

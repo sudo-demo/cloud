@@ -1,0 +1,58 @@
+#logging:
+#  level:
+#    root: DEBUG
+server:
+  port: 3001
+
+  servlet:
+    context-path: /system
+
+spring:
+  datasource:
+    url: jdbc:p6spy:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf8&useSSL=false  # ???? JDBC URL
+    username: root
+    password: root
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  application:
+    name: system
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+    config:
+      enabled: false
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    database: 15
+    connection-pool-size: 32
+    connection-timeout: 10000
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl     #mybatis-plus配置控制台打印完整带参数SQL语句
+    map-underscore-to-camel-case: true #开启驼峰命名法
+  mapper-locations: classpath:mapper/*.xml
+
+knife4j:
+  basic:
+    enable: true
+
+jwt:
+  tokenHeader: Authorization #JWT存储的请求头
+  secret: mall-portal-secret #JWT加解密使用的密钥
+  expiration: 604800 #JWT的超期限时间(60*60*24*7)
+  tokenHead: 'Bearer '  #JWT负载中拿到开头
+
+springfox:
+  documentation:
+    swagger-ui:
+      host: http://127.0.0.1:3001
+
+
+
+
+

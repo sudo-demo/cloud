@@ -1,0 +1,52 @@
+server:
+  port: 3000
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+    # 网关路由配置
+    gateway:
+      discovery:
+        locator:
+          #是否与服务发现组件进行结合，通过serviceId转发到具体实例
+          #是否开启基于服务发现的路由规则
+          enabled: true
+#          ##表示将请求路径的服务名配置改成小写 ,因为服务注册的时候，向注册中心注册时将服务名转成大写的了
+#          lowerCaseServiceId: true
+#          filters:
+#            - StripPrefix=0
+      routes:
+        - id: system  # 路由唯一标识
+#          uri: lb://system  # 路由指向目的地URL或服务名，客户端请求最终被转发到的微服务
+          uri: http://127.0.0.1:3001  # 路由指向目的地URL或服务名，客户端请求最终被转发到的微服务
+          predicates:
+              - Path=/system/**  # 断言：以system开头的请求都负载到system_server服务
+#              - After=2017-01-20T17:42:47.789-07:00[America/Denver]    # 时间点后匹配
+#              - Before=2017-01-20T17:42:47.789-07:00[America/Denver]    # 时间点前匹配
+#              - Between=2017-01-20T17:42:47.789-07:00[America/Denver],2017-01-21T17:42:47.789-07:00[America/Denver]    # 时间区间匹配
+#              - Cookie=chocolate, ch.p                        # 指定cookie正则匹配
+#              - Header=X-Request-Id, \d+                        # 指定Header正则匹配
+#              - Host=**.somehost.org,**.anotherhost.org        # 请求Host匹配
+#              - Method=GET,POST                                # 请求Method匹配指定请求方式
+#              - Path=/red/{segment},/blue/{segment}            # 请求路径正则匹配
+#              - Query=green                                    # 请求包含某参数
+#              - Query=red, gree.                                # 请求包含某参数并且参数值匹配正则表达式(匹配red;green,greet,gree...)
+#              - RemoteAddr=192.168.1.1/24                        # 远程地址匹配
+#          filters:
+#            - RewritePath=/system/(?<segment>.*), /$\{segment} # 过滤器：过滤掉url里的base,例如http://ip:port/base/test -> http://ip:port/test
+#          order: 5   # 用于多个Route之间的排序，数值越小越靠前，匹配优先级越高
+        - id: demo
+          uri: http://127.0.0.1:3002
+          predicates:
+              - Path=/demo/**
+    config:
+      enabled: false
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true

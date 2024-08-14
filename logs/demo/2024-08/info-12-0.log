@@ -1,0 +1,40 @@
+- | [] | [20240812 16:02:45.068] | [INFO] | [bogon] | [main] | [com.example.demo.DemoApplication] | --> Starting DemoApplication using Java 1.8.0_191 on bogon with PID 20888 (/Users/huanghongjia/javaProject/cloud/demo/target/classes started by huanghongjia in /Users/huanghongjia/javaProject/cloud)|
+- | [] | [20240812 16:02:45.073] | [INFO] | [bogon] | [main] | [com.example.demo.DemoApplication] | --> No active profile set, falling back to 1 default profile: "default"|
+- | [] | [20240812 16:02:46.333] | [WARN] | [bogon] | [main] | [o.m.s.mapper.ClassPathMapperScanner] | --> No MyBatis mapper was found in '[com.example.demo]' package. Please check your configuration.|
+- | [] | [20240812 16:02:47.095] | [INFO] | [bogon] | [main] | [o.a.coyote.http11.Http11NioProtocol] | --> Initializing ProtocolHandler ["http-nio-3002"]|
+- | [] | [20240812 16:02:47.096] | [INFO] | [bogon] | [main] | [o.a.catalina.core.StandardService] | --> Starting service [Tomcat]|
+- | [] | [20240812 16:02:47.096] | [INFO] | [bogon] | [main] | [o.a.catalina.core.StandardEngine] | --> Starting Servlet engine: [Apache Tomcat/9.0.71]|
+- | [] | [20240812 16:02:47.238] | [INFO] | [bogon] | [main] | [o.a.c.c.C.[.[localhost].[/demo]] | --> Initializing Spring embedded WebApplicationContext|
+- | [] | [20240812 16:02:49.194] | [INFO] | [bogon] | [main] | [o.a.coyote.http11.Http11NioProtocol] | --> Starting ProtocolHandler ["http-nio-3002"]|
+- | [] | [20240812 16:02:49.463] | [INFO] | [bogon] | [main] | [com.example.demo.DemoApplication] | --> Started DemoApplication in 5.437 seconds (JVM running for 6.543)|
+- | [] | [20240812 16:03:38.612] | [INFO] | [bogon] | [http-nio-3002-exec-2] | [o.a.c.c.C.[.[localhost].[/demo]] | --> Initializing Spring DispatcherServlet 'dispatcherServlet'|
+- | [] | [20240812 16:03:38.635] | [INFO] | [bogon] | [http-nio-3002-exec-2] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/doc.html|
+- | [] | [20240812 16:03:39.006] | [INFO] | [bogon] | [http-nio-3002-exec-1] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-vendors.9a4add2b.js|
+- | [] | [20240812 16:03:39.006] | [INFO] | [bogon] | [http-nio-3002-exec-3] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/app.0f2f48b5.js|
+- | [] | [20240812 16:03:39.039] | [INFO] | [bogon] | [http-nio-3002-exec-4] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/css/app.ff80f646.css|
+- | [] | [20240812 16:03:39.039] | [INFO] | [bogon] | [http-nio-3002-exec-5] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/css/chunk-vendors.7c767628.css|
+- | [] | [20240812 16:03:39.104] | [INFO] | [bogon] | [http-nio-3002-exec-6] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/css/chunk-62d2fe18.8274cf04.css|
+- | [] | [20240812 16:03:39.104] | [INFO] | [bogon] | [http-nio-3002-exec-7] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-0c58d94d.d009b662.js|
+- | [] | [20240812 16:03:39.173] | [INFO] | [bogon] | [http-nio-3002-exec-8] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-2d0af44e.c09671a4.js|
+- | [] | [20240812 16:03:39.173] | [INFO] | [bogon] | [http-nio-3002-exec-5] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-214218f0.92c7a521.js|
+- | [] | [20240812 16:03:39.183] | [INFO] | [bogon] | [http-nio-3002-exec-10] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-2d0d0b98.4693c46e.js|
+- | [] | [20240812 16:03:39.184] | [INFO] | [bogon] | [http-nio-3002-exec-9] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-2d0bd799.5bb1a14e.js|
+- | [] | [20240812 16:03:39.178] | [INFO] | [bogon] | [http-nio-3002-exec-3] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-0fd67716.d57e2c41.js|
+- | [] | [20240812 16:03:39.198] | [INFO] | [bogon] | [http-nio-3002-exec-2] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-2d0da532.a47fb5c8.js|
+- | [] | [20240812 16:03:39.198] | [INFO] | [bogon] | [http-nio-3002-exec-6] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-2d22269d.fc57b306.js|
+- | [] | [20240812 16:03:39.202] | [INFO] | [bogon] | [http-nio-3002-exec-5] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-3b888a65.8737ce4f.js|
+- | [] | [20240812 16:03:39.225] | [INFO] | [bogon] | [http-nio-3002-exec-4] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-589faee0.1cf66f6d.js|
+- | [] | [20240812 16:03:39.236] | [INFO] | [bogon] | [http-nio-3002-exec-4] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-62d2fe18.64c34be0.js|
+- | [] | [20240812 16:03:39.249] | [INFO] | [bogon] | [http-nio-3002-exec-7] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-735c675c.be4e3cfe.js|
+- | [] | [20240812 16:03:39.250] | [INFO] | [bogon] | [http-nio-3002-exec-9] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-adb9e944.e09637fc.js|
+- | [] | [20240812 16:03:39.844] | [INFO] | [bogon] | [http-nio-3002-exec-10] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/swagger-resources|
+- | [] | [20240812 16:03:39.851] | [INFO] | [bogon] | [http-nio-3002-exec-2] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/favicon.ico|
+- | [] | [20240812 16:03:40.000] | [INFO] | [bogon] | [http-nio-3002-exec-8] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/v3/api-docs|
+- | [] | [20240812 16:03:44.649] | [INFO] | [bogon] | [http-nio-3002-exec-9] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-62d2fe18.64c34be0.js|
+- | [] | [20240812 16:03:44.649] | [INFO] | [bogon] | [http-nio-3002-exec-5] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/css/chunk-62d2fe18.8274cf04.css|
+- | [] | [20240812 16:03:44.663] | [INFO] | [bogon] | [http-nio-3002-exec-6] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-0c58d94d.d009b662.js|
+- | [] | [20240812 16:03:44.666] | [INFO] | [bogon] | [http-nio-3002-exec-3] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-adb9e944.e09637fc.js|
+- | [] | [20240812 16:03:44.816] | [INFO] | [bogon] | [http-nio-3002-exec-1] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-214218f0.92c7a521.js|
+- | [] | [20240812 16:03:44.816] | [INFO] | [bogon] | [http-nio-3002-exec-4] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-2d0af44e.c09671a4.js|
+- | [] | [20240812 16:03:44.816] | [INFO] | [bogon] | [http-nio-3002-exec-7] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-3b888a65.8737ce4f.js|
+- | [] | [20240812 16:03:44.866] | [INFO] | [bogon] | [http-nio-3002-exec-2] | [c.e.common.filter.SecurityFilter] | --> 访问的链接是:/demo/webjars/js/chunk-2d0bd799.5bb1a14e.js|
