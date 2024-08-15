@@ -42,7 +42,7 @@ import java.util.Properties;
 
 
 /**
- * @author huanghongjia
+ * 
  * @Intercepts: 这是一个注解，用于标记一个类为 MyBatis 拦截器，并指定该拦截器要拦截的方法。
  *
  * @Signature: 这个注解用于描述要拦截的方法的详细信息。

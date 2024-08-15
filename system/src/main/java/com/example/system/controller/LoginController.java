@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 /**
- * @author huanghongjia
+ * 
  */
 @RestController
 @RequestMapping("Login")//要访问这个类下所有方法，路径必须有/user

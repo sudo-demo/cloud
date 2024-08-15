@@ -6,6 +6,7 @@ import com.example.system.service.SystemUserRoleService;
 import com.example.system.service.SystemUserService;
 import com.example.common.domain.LoginUser;
 import com.example.common.domain.User;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Resource
+    @Lazy
     private SystemUserService systemUserService;
 
     @Resource

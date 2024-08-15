@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * @author huanghongjia
+ * 
  */
 @ApiModel("统一返回结果类")
 @Data

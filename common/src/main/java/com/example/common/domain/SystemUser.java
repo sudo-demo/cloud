@@ -12,7 +12,6 @@ import java.util.Date;
 /**
  * 用户信息表
  *
- * @TableName system_user
  */
 @ApiModel("用户")
 @Data

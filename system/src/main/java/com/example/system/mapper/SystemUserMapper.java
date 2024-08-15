@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.Map;
 
 /**
-* @author huanghongjia
+* 
 * @description 针对表【system_user(用户信息表)】的数据库操作Mapper
 * @createDate 2023-09-01 10:40:37
 * @Entity com.example.base.domain.SystemUser

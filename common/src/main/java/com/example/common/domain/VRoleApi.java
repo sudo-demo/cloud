@@ -10,7 +10,6 @@ import java.util.Map;
 
 /**
  * 
- * @TableName v_role_api
  */
 @Data
 @TableName(value ="v_role_api")

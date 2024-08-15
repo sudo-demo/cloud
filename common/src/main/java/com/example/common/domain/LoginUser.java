@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor //用于生成无参构造函数
+@AllArgsConstructor //用于生成全参构造函数
 public class LoginUser implements UserDetails {
 
     private User user ;

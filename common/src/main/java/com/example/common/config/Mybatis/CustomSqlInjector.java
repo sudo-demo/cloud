@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *  自定义SQL注入方法
- * @author huanghongjia
+ * 
  */
 @Component
 public class CustomSqlInjector extends DefaultSqlInjector {

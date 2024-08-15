@@ -5,7 +5,7 @@ import com.example.common.config.Mybatis.DataScopeInterceptor;
 import java.lang.annotation.*;
 
 /**
- * @author huanghongjia
+ * 
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

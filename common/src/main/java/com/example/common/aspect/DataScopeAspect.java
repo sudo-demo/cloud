@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import java.lang.reflect.Method;
 
 /**
- * @author huanghongjia
+ * 
  */
 @Aspect
 @Component

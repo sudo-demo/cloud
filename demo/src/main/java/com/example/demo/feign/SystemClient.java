@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- * @author huanghongjia
+ * 
  */
 @FeignClient(name = "system",url = "${feign.system.url}")
 public interface SystemClient {

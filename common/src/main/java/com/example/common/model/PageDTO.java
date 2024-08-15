@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * @author huanghongjia
+ * 
  */
 @Data
 public class PageDTO implements Serializable {
@@ -35,7 +35,7 @@ public class PageDTO implements Serializable {
     public <T> Page<T> toPage() {
         Optional<Long> current = Optional.ofNullable(getPageNum());
         Optional<Long> size = Optional.ofNullable(getPageSize());
-        Page<T> page = new Page(current.orElse(1L), size.orElse(10L));
+        Page<T> page = new Page<>(current.orElse(1L), size.orElse(10L));
         if (getDesc() != null) {
             page.setOrders(StringUtils.toStrList(
                             SqlUtil.filter(getDesc())).stream()

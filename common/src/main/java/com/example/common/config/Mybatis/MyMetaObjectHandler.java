@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
- * @author huanghongjia
+ * 
  */
 @Component
 public class MyMetaObjectHandler implements MetaObjectHandler {

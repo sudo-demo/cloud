@@ -13,7 +13,7 @@ import java.util.Date;
 
 /**
  * 角色信息表
- * @author huanghongjia
+ * 
  * @TableName system_role
  */
 @Data

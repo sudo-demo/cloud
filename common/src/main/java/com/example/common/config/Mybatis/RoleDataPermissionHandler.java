@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author huanghongjia
+ * 
  */
 @Component
 public class RoleDataPermissionHandler extends JsqlParserSupport implements InnerInterceptor {

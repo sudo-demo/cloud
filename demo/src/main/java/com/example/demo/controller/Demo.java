@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * @author huanghongjia
+ * 
  */
 @RestController
 @RequestMapping("demo")//要访问这个类下所有方法，路径必须有/user

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author huanghongjia
+ * 
  */
 @RestController//@RestController默认情况下，@RestController注解会将返回的赌侠ing数据转换为JSON格式，这样方便前端用`。
 @RequestMapping("roleUser")//要访问这个类下所有方法，路径必须有/user

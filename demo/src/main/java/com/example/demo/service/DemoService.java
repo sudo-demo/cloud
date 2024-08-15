@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 /**
- * @author huanghongjia
+ * 
  */
 public interface DemoService {
 

@@ -1,7 +1,7 @@
 package com.example.common.util.bean;
 
 /**
- * @author huanghongjia
+ * 
  */
 public final class BeanUtils {
 

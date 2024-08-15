@@ -1,15 +1,16 @@
-package com.example.common.config.Mybatis;
+package com.example.common.config;
 
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.example.common.config.Mybatis.DataScopeInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
 
 /**
- * @author huanghongjia
+ * 
  */
 @Configuration
 public class MybatisPlusConfig {

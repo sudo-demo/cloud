@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 
 /**
- * @author huanghongjia
+ * 
  */
 @Service
 public class Demo1ServiceImpl implements DemoService {

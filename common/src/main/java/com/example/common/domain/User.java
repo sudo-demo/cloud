@@ -11,7 +11,6 @@ import java.util.Set;
 /**
  * 用户信息表
  *
- * @TableName system_user
  */
 @Data
 @TableName(value = "system_user")
