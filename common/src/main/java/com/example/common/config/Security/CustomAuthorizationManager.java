@@ -14,7 +14,7 @@ public class CustomAuthorizationManager implements AuthorizationManager <Request
 
 
     @Resource
-    Permission2Service permission2Service;
+    PermissionService permissionService;
 
 
     @Override
@@ -57,20 +57,17 @@ public class CustomAuthorizationManager implements AuthorizationManager <Request
 //        }
 
 
-//        if(authentication.get().getPrincipal().equals("anonymousUser")){
-//            return new AuthorizationDecision(false);
-//        }
-//        try{
-//            LoginUser principal = (LoginUser) authentication.get().getPrincipal();
-//            permissionService.init(object.getRequest());
-//            if(!permissionService.verifyAuth()){
-////                return new AuthorizationDecision(false);
-//            }
-//            System.out.println("用户"+principal.getUser());
-//        }catch (Exception exception){
-//            exception.printStackTrace();
-//            return new AuthorizationDecision(false);
-//        }
+        if(authentication.get().getPrincipal().equals("anonymousUser")){
+            return new AuthorizationDecision(false);
+        }
+        try{
+            if(!permissionService.verifyAuth(object.getRequest())){
+//                return new AuthorizationDecision(false);
+            }
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return new AuthorizationDecision(false);
+        }
         return new AuthorizationDecision(true);
 
     }

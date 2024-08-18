@@ -17,7 +17,7 @@ public class RepeatableFilter implements Filter
     @Override
     public void init(FilterConfig filterConfig) throws ServletException
     {
-        System.out.println("filterConfig："+filterConfig);
+
     }
 
     @Override

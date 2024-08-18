@@ -1,8 +1,6 @@
 package com.example.system.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.example.common.annotation.Act;
-import com.example.common.annotation.DataScope;
 import com.example.common.annotation.Log;
 import com.example.system.domain.SystemUser;
 import com.example.system.domain.dto.SystemUserDto;
@@ -57,7 +55,6 @@ public class SystemUserController {
     @ApiOperation("用户列表")
     @PostMapping("page")
     public PageResult<SystemUser> list(@RequestBody PageDTO pageDTO){
-        System.out.println("测试:"+pageDTO);
         IPage<SystemUser> userPage = systemUserService.getUserPage(pageDTO);
         return PageResult.of(userPage);
 

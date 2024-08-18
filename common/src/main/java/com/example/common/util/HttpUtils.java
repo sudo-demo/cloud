@@ -2,6 +2,7 @@ package com.example.common.util;
 
 
 import com.example.common.filter.RepeatedlyRequestWrapper;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author ruoyi
  */
+@Component
 public class HttpUtils {
 
     /**

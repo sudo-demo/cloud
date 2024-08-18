@@ -2,6 +2,9 @@ package com.example.common.filter;
 
 
 
+
+import org.springframework.stereotype.Component;
+
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;

@@ -4,59 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cf6cf9ac-e46b-4d87-9aa6-7273111e6130" name="变更" comment="变更">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="cf6cf9ac-e46b-4d87-9aa6-7273111e6130" name="变更" comment="自学习">
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/FilterConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/constants/CommonConstants.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/SecurityUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/annotation/DataScope.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/annotation/DataScope.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/annotation/Log.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/annotation/Log.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/ActAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/ActAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/DataScopeAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/DataScopeAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/LogAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/LogAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/BatchBaseMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/BatchBaseMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/CustomSqlInjector.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/CustomSqlInjector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/DataScopeInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/DataScopeInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/MyMetaObjectHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/MyMetaObjectHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/MybatisPlusConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/MybatisPlusConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/ExceptionHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/ExceptionHandle.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/RoleDataPermissionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/RoleDataPermissionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Redis/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/MybatisPlusConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/MybatisPlusConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/CustomAuthorizationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/CustomAuthorizationManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/Permission2Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/Permission2Service.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/PermissionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/PermissionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/SpringSecurityConfigurer.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/SpringSecurityConfigurer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/domain/LoginUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/domain/LoginUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/domain/SystemUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/domain/SystemUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/domain/VRoleApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/domain/VRoleApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/RepeatableFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/RepeatableFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/model/BaseEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/model/BaseEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/model/PageDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/model/PageDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/model/PageResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/model/PageResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/model/Result.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/model/Result.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/bean/BeanUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/bean/BeanUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/DemoApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/DemoApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/controller/Demo.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/controller/Demo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/feign/SystemClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/feign/SystemClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/DemoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/DemoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/impl/Demo1ServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/impl/Demo1ServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/impl/Demo2ServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/impl/Demo2ServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/SystemRoleUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/SystemRoleUserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/domain/SystemRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/domain/SystemRole.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemRoleApiMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemRoleApiMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemRoleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemRoleMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemUserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemUserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemUserRoleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemUserRoleMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemUserRoleScopeMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemUserRoleScopeMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/VRoleApiMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/VRoleApiMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/SystemRoleApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/SystemRoleApiService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/SystemRoleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/SystemRoleService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/SystemUserRoleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/SystemUserRoleService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/SystemUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/SystemUserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemRoleApiServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemRoleApiServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemRoleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemRoleServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemUserRoleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemUserRoleServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/RepeatedlyRequestWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/RepeatedlyRequestWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/SecurityFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/SecurityFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/HttpUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/HttpUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/RedisUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/RedisUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/SystemUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/SystemUserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemUserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemUserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/UserDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/UserDetailsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/src/main/resources/mapper/SystemUserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/resources/mapper/SystemUserMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +52,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitToolBoxStore">
+    <option name="projectConfigVersion" value="5" />
     <option name="recentBranches">
       <RecentBranches>
         <option name="branchesForRepo">
@@ -341,8 +312,20 @@
       <workItem from="1723518168614" duration="19868000" />
       <workItem from="1723603641514" duration="10698000" />
       <workItem from="1723643901665" duration="646000" />
-      <workItem from="1723713764877" duration="2453000" />
+      <workItem from="1723713764877" duration="2693000" />
+      <workItem from="1723772561362" duration="14016000" />
+      <workItem from="1723897839285" duration="8350000" />
+      <workItem from="1723987806138" duration="1199000" />
     </task>
+    <task id="LOCAL-00001" summary="自学习">
+      <option name="closed" value="true" />
+      <created>1723716611860</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1723716611860</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -358,7 +341,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="变更" />
-    <option name="LAST_COMMIT_MESSAGE" value="变更" />
+    <MESSAGE value="自学习" />
+    <option name="LAST_COMMIT_MESSAGE" value="自学习" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -367,11 +351,6 @@
           <url>jar://$MAVEN_REPOSITORY$/org/springframework/security/spring-security-web/5.7.7/spring-security-web-5.7.7.jar!/org/springframework/security/web/access/intercept/RequestAuthorizationContext.class</url>
           <line>25</line>
           <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/DataScopeInterceptor.java</url>
-          <line>270</line>
-          <option name="timeStamp" value="45" />
         </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.lang.NullPointerException" package="java.lang" />
@@ -385,6 +364,7 @@
         <PinnedItemInfo parentTag="org.springframework.core.annotation.SynthesizedMergedAnnotationInvocationHandler" memberName="string" />
         <PinnedItemInfo parentTag="org.apache.ibatis.mapping.BoundSql" memberName="parameterMappings" />
         <PinnedItemInfo parentTag="com.baomidou.mybatisplus.core.toolkit.PluginUtils$MPBoundSql" memberName="boundSql" />
+        <PinnedItemInfo parentTag="com.example.common.util.JwtUtil" memberName="expiration" />
         <PinnedItemInfo parentTag="org.springframework.security.authentication.UsernamePasswordAuthenticationToken" memberName="principal" />
         <PinnedItemInfo parentTag="org.apache.ibatis.mapping.BoundSql" memberName="parameterObject" />
         <PinnedItemInfo parentTag="org.apache.ibatis.plugin.Invocation" memberName="method" />

@@ -84,32 +84,32 @@ public class Permission2Service {
     }
 
 
-    public void init(HttpServletRequest request) throws Exception {
-        this.currentControllerRoleAuth = new HashMap<>();
-        this.currentActionRoleAuth = new HashMap<>();
-        this.roleIds = jwtUtil.getRoleIds();
-        this.conditions = null;
-        HandlerExecutionChain executionChain = requestMappingHandlerMapping.getHandler(request);
-        if (executionChain != null && (executionChain.getHandler() instanceof HandlerMethod)) {
-            HandlerMethod handlerMethod = (HandlerMethod) executionChain.getHandler();
-            String controller = handlerMethod.getBeanType().getSimpleName().replace("Controller", "");
-
-            this.appController = app + "/" + controller;
-            this.action = handlerMethod.getMethod().getName();
-            System.out.println("角色：" + this.roleIds);
-            System.out.println("请求的模块/控制器：" + this.appController);
-            System.out.println("请求的方法：" + this.action);
-        }
-        for (Long roleId : this.roleIds) {
-            VRoleApi cacheMapValue = RedisUtil.hget("role_" + roleId, this.appController);
-            if(cacheMapValue == null)  continue;
-            currentControllerRoleAuth.put(roleId,cacheMapValue);
-            if(cacheMapValue.getChildren().get(this.action) != null){
-                currentActionRoleAuth.put(roleId,cacheMapValue.getChildren().get(this.action));
-            }
-        }
-
-
-
-    }
+//    public void init(HttpServletRequest request) throws Exception {
+//        this.currentControllerRoleAuth = new HashMap<>();
+//        this.currentActionRoleAuth = new HashMap<>();
+//        this.roleIds = jwtUtil.getRoleIds();
+//        this.conditions = null;
+//        HandlerExecutionChain executionChain = requestMappingHandlerMapping.getHandler(request);
+//        if (executionChain != null && (executionChain.getHandler() instanceof HandlerMethod)) {
+//            HandlerMethod handlerMethod = (HandlerMethod) executionChain.getHandler();
+//            String controller = handlerMethod.getBeanType().getSimpleName().replace("Controller", "");
+//
+//            this.appController = app + "/" + controller;
+//            this.action = handlerMethod.getMethod().getName();
+//            System.out.println("角色：" + this.roleIds);
+//            System.out.println("请求的模块/控制器：" + this.appController);
+//            System.out.println("请求的方法：" + this.action);
+//        }
+//        for (Long roleId : this.roleIds) {
+//            VRoleApi cacheMapValue = RedisUtil.hget("role_" + roleId, this.appController);
+//            if(cacheMapValue == null)  continue;
+//            currentControllerRoleAuth.put(roleId,cacheMapValue);
+//            if(cacheMapValue.getChildren().get(this.action) != null){
+//                currentActionRoleAuth.put(roleId,cacheMapValue.getChildren().get(this.action));
+//            }
+//        }
+//
+//
+//
+//    }
 }

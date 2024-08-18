@@ -1,151 +1,138 @@
 package com.example.common.util;
 
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.jwt.JWT;
-import cn.hutool.jwt.JWTException;
-import cn.hutool.jwt.JWTValidator;
 import cn.hutool.jwt.signers.JWTSignerUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
-import com.example.common.domain.LoginUser;
 import com.example.common.domain.User;
-import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Set;
 
 
-@Slf4j
 @Component
 public class JwtUtil {
-    private final String CLAIM_KEY_USERNAME = "sub";//用户
-    private final String TOKEN_ID = "ID";//tokenid
-    private final String ACCESS_TOKEN = "login_tokens:";// token在redis中的key
+    private static final String CLAIM_KEY_USERNAME = "sub";// JWT中的用户标识
+    private static final String TOKEN_ID = "ID";// JWT中的token ID
+    private static final String ACCESS_TOKEN = "login_tokens:";// token在Redis中的key前缀
+
+
+    private static String tokenHeader;// 从请求中获取token的header名称
 
     @Value("${jwt.tokenHeader}")
-    private String tokenHeader;
+    public void setTokenHeader(String tokenHeader) {
+        JwtUtil.tokenHeader = tokenHeader;
+    }
+
+    @Contract(pure = true)
+    public static String getTokenHeader() {
+        return tokenHeader;
+    }
+
+    private static String tokenHead;// token前缀
+
     @Value("${jwt.tokenHead}")
-    private String tokenHead;
+    public void setTokenHead(String tokenHead) {
+        JwtUtil.tokenHead = tokenHead;
+    }
+
+    @Contract(pure = true)
+    public static String getTokenHead() {
+        return tokenHead;
+    }
+
     /**
-     * 秘钥
+     * 秘钥，用于签名和验证JWT
      */
     @Value("${jwt.secret}")
     private String secret;
+
+
     /**
-     * 超时时间
+     * 超时时间，单位为秒
      */
     @Value("${jwt.expiration}")
     private Integer expiration;
 
 
-    private String getTokenKey(String tokenId) {
+    /**
+     * 根据tokenId生成Redis中的token key
+     */
+    public static String getTokenKey(String tokenId) {
         return ACCESS_TOKEN + tokenId;
     }
 
+    /**
+     * 获取秘钥的字节数组
+     */
     public byte[] getSecret() {
         return secret.getBytes();
     }
 
 
+    /**
+     * 创建JWT token
+     */
     public String createToken(User user) {
-        String tokenId = IdUtil.nanoId();
+        String tokenId = IdUtil.nanoId(); // 生成唯一的token ID
         String token = JWT.create()
-                .setSubject(CLAIM_KEY_USERNAME)
-                .setSigner(JWTSignerUtil.hs256(getSecret()))
-//                .setIssuedAt(new Date())
-//                .setExpiresAt(DateUtil.offsetMillisecond(DateUtil.date(), expiration))//设置过期时间
-                .setPayload(TOKEN_ID, tokenId)
-                .sign();
+                .setSubject(CLAIM_KEY_USERNAME) // 设置JWT的主题
+                .setSigner(JWTSignerUtil.hs256(getSecret())) // 设置签名算法
+//                .setIssuedAt(new Date()) // 设置签发时间
+//                .setExpiresAt(DateUtil.offsetMillisecond(DateUtil.date(), expiration)) // 设置过期时间
+                .setPayload(TOKEN_ID, tokenId) // 设置token ID到payload
+                .sign(); // 签名生成token
 
-        // 存储
+        // 存储用户信息到Redis
         refreshToken(user, tokenId);
 
-        return token;
+        return token; // 返回生成的token
     }
 
+    /**
+     * 刷新token，存储用户信息到Redis
+     */
     public void refreshToken(User user, String tokenId) {
         RedisUtil.set(getTokenKey(tokenId), JSON.toJSONString(user, JSONWriter.Feature.WriteMapNullValue), expiration);
     }
 
-    public String getTokenId(String token) {
+    /**
+     * 从token中获取token ID
+     */
+    public static String getTokenId(String token) {
         try {
-            JWT jwt = JWT.of(token);
-            return (String) jwt.getPayload(TOKEN_ID);
+            JWT jwt = JWT.of(token); // 解析token
+            return (String) jwt.getPayload(TOKEN_ID); // 获取token ID
         } catch (Exception e) {
             // Token 验证失败
-//            e.printStackTrace();
-            return null;
+            return null; // 返回null表示验证失败
         }
     }
 
-    public User getLoginUser(HttpServletRequest request) {
-        String tokenId = getTokenId(getToken(request));
-        if (ObjectUtil.isNull(tokenId)) {
-            return null;
-        }
-        Object user = RedisUtil.get(getTokenKey(tokenId));
-        if (ObjectUtil.isNull(user)) {
-            return null;
-        }
-        return JSON.parseObject(user.toString(), User.class);
+
+    /**
+     * 根据token获取存在Redis的token key
+     */
+    public static String getTokenKey(HttpServletRequest request) {
+        return JwtUtil.getTokenKey(JwtUtil.getTokenId(JwtUtil.getToken(request)));
     }
 
-    public User getUser() {
-        // 先从上下文获取用户
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-            return loginUser.getUser();
-        } catch (Exception exception) {
-            // 不做处理
-        }
-        String token = getToken();
-        return ObjectUtil.isNull(getLoginUser(token)) ? new User() : getLoginUser(token);
-    }
-
-
-    public Set<Long> getRoleIds() {
-        User user = getUser();
-        return user.getRoleIds();
-    }
-
-    public User getLoginUser(String token) {
-        String tokenId = getTokenId(token);
-        if (ObjectUtil.isNull(tokenId)) {
-            return null;
-        }
-        Object user = RedisUtil.get(getTokenKey(tokenId));
-        return JSON.parseObject(user.toString(), User.class);
-    }
-
-    public String getToken() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String token = request.getHeader(tokenHeader);
+    /**
+     * 获取请求中的token
+     */
+    public static String getToken(HttpServletRequest request){
+        String token = request.getHeader(JwtUtil.getTokenHeader()); // 从header获取token
         // 如果前端设置了令牌前缀，则裁剪掉前缀
-        if (StringUtils.isNotEmpty(token) && token.startsWith(tokenHead)) {
-            token = token.replaceFirst(tokenHead, "");
+        if (StringUtils.isNotEmpty(token) && token.startsWith(JwtUtil.getTokenHead())) {
+            token = token.replaceFirst(JwtUtil.getTokenHead(), ""); // 去掉前缀
         }
-        return token;
+        return token; // 返回token
     }
 
-    public String getToken(HttpServletRequest request) {
-        // 从header获取token标识
-        String token = request.getHeader(tokenHeader);
-        // 如果前端设置了令牌前缀，则裁剪掉前缀
-        if (StringUtils.isNotEmpty(token) && token.startsWith(tokenHead)) {
-            token = token.replaceFirst(tokenHead, "");
-        }
-        return token;
-    }
 
 
 }

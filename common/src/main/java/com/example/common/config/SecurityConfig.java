@@ -2,9 +2,12 @@ package com.example.common.config;
 
 import com.alibaba.fastjson.JSON;
 import com.example.common.config.Security.CustomAuthorizationManager;
+import com.example.common.constants.CommonConstants;
 import com.example.common.filter.SecurityFilter;
 import com.example.common.model.Result;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,7 +44,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers("/auth/**", "/oauth/**", "/doc.html", "/webjars/**", "/swagger-resources/**", "/v*/api-docs/**", "/Login/login").permitAll() // 白名单，允许匿名访问
+                        .antMatchers(CommonConstants.WHITE_LIST).permitAll() // 白名单，允许匿名访问
                         .anyRequest().access(customAuthorizationManager) // 自定义授权管理器
                 )
                 .csrf().disable() // 禁用 CSRF

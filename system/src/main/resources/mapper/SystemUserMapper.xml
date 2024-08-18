@@ -29,6 +29,6 @@
         FROM system_user su
         where EXISTS (SELECT *
                       from system_user_role sur
-                      where sur.user_id = su.user_id ${baseEntity.dataScope})
+                      where sur.user_id = su.user_id)
     </select>
 </mapper>
