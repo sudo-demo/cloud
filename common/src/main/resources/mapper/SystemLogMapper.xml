@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.common.mapper.SystemLogMapper">
+  <resultMap id="BaseResultMap" type="com.example.common.domain.SystemLog">
+    <!--@mbg.generated-->
+    <!--@Table system_log-->
+    <result column="log_id" jdbcType="BIGINT" property="logId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="request" jdbcType="LONGVARCHAR" property="request" />
+    <result column="response" jdbcType="LONGVARCHAR" property="response" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="response_message" jdbcType="LONGVARCHAR" property="responseMessage" />
+    <result column="api_url" jdbcType="VARCHAR" property="apiUrl" />
+    <result column="api_name" jdbcType="VARCHAR" property="apiName" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    log_id, user_id, username, nickname, role_id, ip, request, response, code, response_message, 
+    api_url, api_name, created_at
+  </sql>
+</mapper>
