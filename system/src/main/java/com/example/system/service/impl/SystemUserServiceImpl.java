@@ -1,12 +1,14 @@
 package com.example.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.common.annotation.DataScope;
 import com.example.common.model.BaseEntity;
+import com.example.common.util.HttpUtils;
 import com.example.common.util.JwtUtil;
 import com.example.system.domain.SystemUser;
 import com.example.system.domain.dto.LoginBody;
@@ -21,6 +23,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.annotation.Resource;
 import java.util.HashMap;

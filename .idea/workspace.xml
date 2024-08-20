@@ -5,28 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cf6cf9ac-e46b-4d87-9aa6-7273111e6130" name="变更" comment="自学习">
-      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/FilterConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/constants/CommonConstants.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/SecurityUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/FileUploadConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/service/SystemLogService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/service/UploadFileService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/service/impl/SystemLogServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/service/impl/UploadFileServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/resources/application-common.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/UploadFileController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/ExceptionHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/ExceptionHandle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/RoleDataPermissionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/RoleDataPermissionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/MybatisPlusConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/MybatisPlusConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/LogAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/LogAspect.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/CustomAuthorizationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/CustomAuthorizationManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/Permission2Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/Permission2Service.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/PermissionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/PermissionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Swagger3Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Swagger3Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/WebMvcConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/WebMvcConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/constants/CommonConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/constants/CommonConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/domain/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/RepeatableFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/RepeatableFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/RepeatedlyRequestWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/RepeatedlyRequestWrapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/SecurityFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/SecurityFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/HttpUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/HttpUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/JwtUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/RedisUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/RedisUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/SecurityUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/SecurityUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/SystemApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/SystemApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/SystemUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/SystemUserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemUserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemUserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/UserDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/UserDetailsServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/resources/mapper/SystemUserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/resources/mapper/SystemUserMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,9 +45,9 @@
       <list>
         <option value="FxmlFile" />
         <option value="Enum" />
-        <option value="Kotlin Class" />
         <option value="AnnotationType" />
         <option value="Interface" />
+        <option value="Kotlin Class" />
         <option value="Class" />
       </list>
     </option>
@@ -103,40 +107,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelOrder2&quot;: &quot;2&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth2&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;ToolWindow运行.ShowToolbar&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;1.8&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/huanghongjia/javaProject/cloud/common/src/main/java/com/example/common/config/Mybatis&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/huanghongjia/javaProject/cloud/demo/src/main/java/com/example/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;copyright&quot;,
-    &quot;spring.configuration.checksum&quot;: &quot;5567e507e8347fb854c0ebf382b5f214&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelOrder2": "2",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RequestMappingsPanelWidth2": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "ToolWindow运行.ShowToolbar": "false",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "jdk.selected.JAVA_MODULE": "1.8",
+    "last_opened_file_path": "/Users/huanghongjia/javaProject/cloud",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "/Users/huanghongjia/javaProject/cloud/demo/src/main/java/com/example/Main.java",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.17",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "copyright",
+    "spring.configuration.checksum": "5567e507e8347fb854c0ebf382b5f214",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -145,10 +149,14 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/common/src/main/resources" />
       <recent name="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis" />
       <recent name="$PROJECT_DIR$/base/src/main/resources" />
       <recent name="$PROJECT_DIR$/src/main/resources" />
-      <recent name="$PROJECT_DIR$/demo1/src/main/resources" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/system/src/main/resources" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.example.common.util" />
@@ -315,7 +323,9 @@
       <workItem from="1723713764877" duration="2693000" />
       <workItem from="1723772561362" duration="14016000" />
       <workItem from="1723897839285" duration="8350000" />
-      <workItem from="1723987806138" duration="1199000" />
+      <workItem from="1723987806138" duration="1371000" />
+      <workItem from="1724031638635" duration="24708000" />
+      <workItem from="1724117537938" duration="23595000" />
     </task>
     <task id="LOCAL-00001" summary="自学习">
       <option name="closed" value="true" />
@@ -325,7 +335,15 @@
       <option name="project" value="LOCAL" />
       <updated>1723716611860</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="自学习">
+      <option name="closed" value="true" />
+      <created>1723989101514</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1723989101514</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -368,11 +386,17 @@
         <PinnedItemInfo parentTag="org.springframework.security.authentication.UsernamePasswordAuthenticationToken" memberName="principal" />
         <PinnedItemInfo parentTag="org.apache.ibatis.mapping.BoundSql" memberName="parameterObject" />
         <PinnedItemInfo parentTag="org.apache.ibatis.plugin.Invocation" memberName="method" />
+        <PinnedItemInfo parentTag="org.springframework.web.multipart.support.StandardMultipartHttpServletRequest$StandardMultipartFile" memberName="part" />
         <PinnedItemInfo parentTag="org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter$DefaultPasswordEncoderAuthenticationManagerBuilder" memberName="AbstractConfiguredSecurityBuilder.logger" />
         <PinnedItemInfo parentTag="org.apache.ibatis.mapping.BoundSql" memberName="sql" />
         <PinnedItemInfo parentTag="org.springframework.security.web.access.intercept.AuthorizationFilter" memberName="servletContext" />
       </pinned-members>
     </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="SpringBootApplicationConfigurationType">
+        <watch expression="httpRequest.getContentType()" language="JAVA" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/cloud$Demo1Application.ic" NAME="Demo1Application 覆盖结果" MODIFIED="1692693449159" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

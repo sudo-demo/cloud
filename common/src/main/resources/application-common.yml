@@ -1,0 +1,37 @@
+file-upload:
+    access-path: ${server.host}
+    static-access-path: /storage/
+    upload-dir: /Users/huanghongjia/javaProject/cloud/common/src/main/resources/storage/
+    images:
+        dir: ${file-upload.upload-dir}/images/
+        max-size: 2MB
+        allowed-types: # 允许的文件类型
+            - image/jpeg
+            - image/png
+            - image/gif
+        allowed-extensions: # 允许的文件后缀
+            - .jpg
+            - .jpeg
+            - .png
+    files:
+        dir: ${file-upload.upload-dir}/files/
+        max-size: 5MB
+        allowed-types: # 允许的文件类型
+            - application/msword                   # .doc
+            - application/pdf                      # .pdf
+            - application/vnd.ms-excel             # .xls
+            - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet  # .xlsx
+            - application/vnd.openxmlformats-officedocument.wordprocessingml.document  # .docx
+        allowed-extensions: # 允许的文件后缀
+            - .doc
+            - .pdf
+            - .xls
+            - .xlsx
+            - .docx
+    xmls:
+        dir: ${file-upload.upload-dir}/files/
+        max-size: 5MB
+        allowed-types: # 允许的文件类型
+            - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet  # .xlsx
+        allowed-extensions: # 允许的文件后缀
+            - .xlsx

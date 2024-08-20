@@ -38,7 +38,7 @@ public class SystemUserController {
     @Log
     @ApiOperation("修改用户")
     @PostMapping("update")
-    public Result update(@Validated(Update.class) @RequestBody SystemUserDto systemUserDto){
+    public Result updated(@Validated(Update.class) @RequestBody SystemUserDto systemUserDto){
         systemUserService.updated(systemUserDto);
         return Result.success();
     }
@@ -54,7 +54,7 @@ public class SystemUserController {
 //    @Act(methodToCall = "execution(com.example.system.service.impl.getAct)")
     @ApiOperation("用户列表")
     @PostMapping("page")
-    public PageResult<SystemUser> list(@RequestBody PageDTO pageDTO){
+    public PageResult<SystemUser> list(@RequestBody PageDTO pageDTO) throws Exception {
         IPage<SystemUser> userPage = systemUserService.getUserPage(pageDTO);
         return PageResult.of(userPage);
 

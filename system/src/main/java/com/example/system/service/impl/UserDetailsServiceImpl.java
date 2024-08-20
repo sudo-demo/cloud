@@ -1,6 +1,7 @@
 package com.example.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.example.system.domain.SystemUserRole;
 import com.example.system.service.SystemUserRoleService;
 import com.example.system.service.SystemUserService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,15 +37,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SystemUser one = systemUserService.lambdaQuery()
+        SystemUser systemUser = systemUserService.lambdaQuery()
                 .eq(SystemUser::getLoginId, username).one();
-        if(one == null){
+        if(ObjectUtil.isNull(systemUser)){
             throw new UsernameNotFoundException("用户不存在");
         }
-        List<SystemUserRole> list = systemUserRoleService.lambdaQuery().eq(SystemUserRole::getUserId, one.getUserId()).list();
+        List<SystemUserRole> list = systemUserRoleService.lambdaQuery().eq(SystemUserRole::getUserId, systemUser.getUserId()).list();
         Set<Long> roleIds = list.stream().map(SystemUserRole::getRoleId).collect(Collectors.toSet());
-        User user = BeanUtil.copyProperties(one, User.class);
+        Long firstRoleId = roleIds.stream().findFirst().orElseThrow(() -> new NoSuchElementException("没有角色 ID"));
+        User user = BeanUtil.copyProperties(systemUser, User.class);
         user.setRoleIds(roleIds);
+        user.setRoleId(firstRoleId);
         LoginUser loginUser = new LoginUser();
         loginUser.setUser(user);
 

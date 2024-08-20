@@ -1,7 +1,7 @@
 package com.example.common.util;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.alibaba.fastjson2.JSON;
 import com.example.common.domain.LoginUser;
 import com.example.common.domain.User;
 import org.springframework.security.core.Authentication;
@@ -18,7 +18,11 @@ public class SecurityUtils {
         if (ObjectUtil.isNull(user)) {
             return null; // 如果用户信息为空，返回null
         }
-        return JSON.parseObject(user.toString(), User.class); // 解析并返回用户对象
+        return BeanUtil.copyProperties(user, User.class);
+//        if (ObjectUtil.isNull(user)) {
+//            return null; // 如果用户信息为空，返回null
+//        }
+//        return JSON.parseObject(user.toString(), User.class); // 解析并返回用户对象
     }
 
     /**
@@ -39,10 +43,32 @@ public class SecurityUtils {
 
 
     /**
-     * 获取当前用户的角色ID集合
+     * 获取用户所有的角色ID集合
      */
     public static Set<Long> getRoleIds() {
         User user = getUser(); // 获取当前用户
         return user.getRoleIds(); // 返回用户的角色ID集合
+    }
+
+    /**
+     * 获取用户当前的角色ID
+     */
+    public static Long getRoleId(){
+        User user = getUser(); // 获取当前用户
+        return user.getRoleId(); // 返回用户的角色ID
+    }
+
+    /**
+     * 获取当前的用户ID
+     */
+    public static Long getUserId(){
+        return getUser().getUserId();
+    }
+
+    /**
+     * 获取当前的用户名称
+     */
+    public static String getUserName(){
+        return getUser().getUserName();
     }
 }

@@ -101,9 +101,14 @@ public class User implements Serializable {
     private String wechatOpenid;
 
     /**
-     * 角色
+     * 所有角色
      */
     private Set<Long> roleIds;
+
+    /**
+     * 当前角色
+     */
+    private Long roleId;
 
 
 }

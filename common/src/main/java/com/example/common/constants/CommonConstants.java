@@ -12,6 +12,7 @@ public class CommonConstants {
             "/webjars/**",
             "/swagger-resources/**",
             "/v*/api-docs/**",
-            "/Login/login"
+            "/Login/login",
+            "/storage/**",
     };
 }

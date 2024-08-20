@@ -10,7 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
         "com.example.system",
         "com.example.common"
 })
-@MapperScan("com.example.system.mapper") ////指定mapper包的位置，告诉springboot我的mapper接口在哪，项目启动时回家再所有的接口文件
+@MapperScan({"com.example.system.mapper","com.example.common.mapper"}) ////指定mapper包的位置，告诉springboot我的mapper接口在哪，项目启动时回家再所有的接口文件
 @EnableDiscoveryClient
 @EnableFeignClients
 public class SystemApplication {

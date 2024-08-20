@@ -97,7 +97,8 @@ public class JwtUtil {
      * 刷新token，存储用户信息到Redis
      */
     public void refreshToken(User user, String tokenId) {
-        RedisUtil.set(getTokenKey(tokenId), JSON.toJSONString(user, JSONWriter.Feature.WriteMapNullValue), expiration);
+//        RedisUtil.set(getTokenKey(tokenId), JSON.toJSONString(user, JSONWriter.Feature.WriteMapNullValue), expiration);
+        RedisUtil.set(getTokenKey(tokenId),user, expiration);
     }
 
     /**

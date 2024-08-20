@@ -3,11 +3,15 @@
 #    root: DEBUG
 server:
   port: 3001
-
+  host: http://localhost:3001${server.servlet.context-path}
   servlet:
     context-path: /system
+  tomcat:
+    max-http-form-post-size: 10MB
 
 spring:
+  profiles:
+    active: common
   datasource:
     url: jdbc:p6spy:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf8&useSSL=false  # ???? JDBC URL
     username: root
@@ -36,6 +40,11 @@ spring:
         max-active: 32        # 最大连接数
         max-idle: 16          # 最大空闲连接数
         min-idle: 8           # 最小空闲连接数
+  servlet:
+      multipart:
+        enabled: true       # 启用文件上传
+        max-file-size: 10MB # 单个文件的最大大小
+        max-request-size: 10MB # 请求的最大大小
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl     #mybatis-plus配置控制台打印完整带参数SQL语句
