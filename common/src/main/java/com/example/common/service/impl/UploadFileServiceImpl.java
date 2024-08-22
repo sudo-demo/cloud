@@ -31,6 +31,11 @@ public class UploadFileServiceImpl implements UploadFileService {
         return handleFileUpload(file, fileUploadConfig.getImages());
     }
 
+    /**
+     * 上传文件
+     *
+     * @param file 要上传的文件
+     */
     @Override
     public void uploadFiles(MultipartFile file) {
         // TODO: 实现文件上传逻辑

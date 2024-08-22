@@ -23,7 +23,6 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-
         User user = SecurityUtils.getLoginUser(httpServletRequest);
         if(ObjectUtil.isNotEmpty(user)){
             LoginUser loginUser = new LoginUser();

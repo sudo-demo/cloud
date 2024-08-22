@@ -18,6 +18,18 @@ spring:
   cloud:
     config:
       enabled: false
+  redis:
+    host: 127.0.0.1 # Redis 服务器地址
+    port: 6379 # Redis 服务器端口
+    password: 123456 # Redis 连接密码
+    database: 15 # 使用的数据库索引
+    timeout: 10000 # 连接超时时间（毫秒）
+    key-prefix: "cloud:" # Redis key 前缀
+    lettuce: # Lettuce 连接池配置
+      pool:
+        max-active: 32        # 最大连接数
+        max-idle: 16          # 最大空闲连接数
+        min-idle: 8           # 最小空闲连接数
 
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
@@ -27,4 +39,5 @@ jwt:
 
 feign:
   system:
-    url: 127.0.0.1:3001/system/
+    url: 127.0.0.1:3001
+    path: /system

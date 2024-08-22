@@ -1,7 +1,9 @@
 package com.example.common.enums;
 
 import com.example.common.model.Result;
+import lombok.Getter;
 
+@Getter
 public enum ResultEnum {
 
     SUCCESS(200, "操作成功"),
@@ -42,29 +44,20 @@ public enum ResultEnum {
     /**
      * 操作返回值编号
      */
-    private int code;
+    private final int code;
 
     /**
      *操作返回值描述
      */
-    private String message;
+    private final String message;
 
     ResultEnum(int code, String message) {
         this.code = code;
         this.message = message;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
     /**
      * 转换成返回结果类
-     * @return
      */
     public <T> Result<T> toResp() {
         return Result.of(this);

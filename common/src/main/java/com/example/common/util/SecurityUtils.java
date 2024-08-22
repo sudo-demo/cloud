@@ -29,7 +29,6 @@ public class SecurityUtils {
      * 获取当前用户
      */
     public static User getUser() {
-        HttpServletRequest request = HttpUtils.getRequest();
         // 先从上下文获取用户
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -38,6 +37,7 @@ public class SecurityUtils {
         } catch (Exception exception) {
             // 不做处理
         }
+        HttpServletRequest request = HttpUtils.getRequest();
         return ObjectUtil.isNull(getLoginUser(request)) ? new User() : getLoginUser(request); // 如果获取失败，返回一个新的User对象
     }
 

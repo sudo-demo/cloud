@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.common.domain.SystemUser;
 import com.example.common.model.PageResult;
 import com.example.demo.service.DemoService;
-import com.example.demo.service.impl.Demo1ServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +16,6 @@ import javax.annotation.Resource;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -62,5 +60,11 @@ public class Demo {
                 )
         );
         orDefault.demo2();
+    }
+
+    @ApiOperation("createDemo")
+    @PostMapping("/createDemo")
+    public void createDemo(){
+
     }
 }

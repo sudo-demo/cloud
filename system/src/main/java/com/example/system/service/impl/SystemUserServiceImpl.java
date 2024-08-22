@@ -44,8 +44,8 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
     @Autowired
     private SystemUserMapper systemUserMapper;
 
-    @DataScope(clazz = SystemUserServiceImpl.class, callMethod = "setUserDataScope")
-//    @DataScope()
+//    @DataScope(clazz = SystemUserServiceImpl.class, callMethod = "setUserDataScope")
+    @DataScope()
     @Override
     public IPage<SystemUser> getUserPage(PageDTO pageDTO) {
         Page<SystemUser> page = pageDTO.toPage();

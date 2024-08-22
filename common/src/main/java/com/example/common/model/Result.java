@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * 
+ * 统一返回结果类
  */
 @ApiModel("统一返回结果类")
 @Data
@@ -21,18 +21,18 @@ public class Result<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("状态码")
-    private int code;
+    private int code; // 状态码
 
     @ApiModelProperty("提示信息")
-    private String message;
+    private String message; // 提示信息
 
     @ApiModelProperty("返回结果")
-    private T data;
+    private T data; // 返回结果
 
     /**
      * 是否成功
      *
-     * @return
+     * @return true 如果状态码为成功
      */
     @JsonIgnore
     @JSONField(serialize = false)
@@ -43,7 +43,7 @@ public class Result<T> implements Serializable {
     /**
      * 是否失败
      *
-     * @return
+     * @return true 如果状态码不为成功
      */
     @JsonIgnore
     @JSONField(serialize = false)
@@ -51,38 +51,44 @@ public class Result<T> implements Serializable {
         return code != ResultEnum.SUCCESS.getCode();
     }
 
-//    /**
-//     * 转换对象
-//     *
-//     * @return
-//     */
-//    public <E> Result<E> convertT(Class<E> clazz) {
-//        E e = Func.copyProperties(data, clazz);
-//        return Result.success(e);
-//    }
-
-    private static <T> Result<T> of(ResultEnum resultEnum, T data) {
-        return new Result()
-                .setCode(resultEnum.getCode())
-                .setMessage(resultEnum.getMessage())
-                .setData(data);
+    /**
+     * 私有构造函数
+     *
+     * @param code    状态码
+     * @param message 提示信息
+     * @param data    返回结果
+     */
+    private Result(int code, String message, T data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
     }
 
     /**
-     * 返回成功消息
+     * 根据结果枚举和数据创建结果对象
      *
-     * @param resultEnum 返回结果枚举
-     * @return 成功消息
+     * @param resultEnum 结果枚举
+     * @param data       返回数据
+     * @return Result<T> 结果对象
+     */
+    private static <T> Result<T> of(ResultEnum resultEnum, T data) {
+        return new Result<>(resultEnum.getCode(), resultEnum.getMessage(), data);
+    }
+
+    /**
+     * 根据结果枚举创建结果对象
+     *
+     * @param resultEnum 结果枚举
+     * @return Result<T> 结果对象
      */
     public static <T> Result<T> of(ResultEnum resultEnum) {
         return of(resultEnum, null);
     }
 
-
     /**
      * 返回成功消息
      *
-     * @return 成功消息
+     * @return Result<T> 成功消息
      */
     public static <T> Result<T> success() {
         return of(ResultEnum.SUCCESS);
@@ -92,21 +98,17 @@ public class Result<T> implements Serializable {
      * 返回成功消息
      *
      * @param msg 返回消息
-     * @return 成功消息
+     * @return Result<T> 成功消息
      */
     public static <T> Result<T> msg(String msg) {
-        return new Result()
-                .setCode(ResultEnum.SUCCESS.getCode())
-                .setMessage(msg);
+        return new Result<>(ResultEnum.SUCCESS.getCode(), msg, null);
     }
-
-
 
     /**
      * 返回成功消息
      *
      * @param data 返回内容
-     * @return 成功消息
+     * @return Result<T> 成功消息
      */
     public static <T> Result<T> success(T data) {
         return of(ResultEnum.SUCCESS, data);
@@ -116,19 +118,17 @@ public class Result<T> implements Serializable {
      * 返回成功消息
      *
      * @param data 返回内容
-     * @return 成功消息
+     * @param code 返回状态码
+     * @return Result<T> 成功消息
      */
     public static <T> Result<T> success(T data, int code) {
-        return new Result()
-                .setCode(code)
-                .setMessage(ResultEnum.SUCCESS.getMessage())
-                .setData(data);
+        return new Result<>(code, ResultEnum.SUCCESS.getMessage(), data);
     }
 
     /**
      * 返回错误消息
      *
-     * @return
+     * @return Result<T> 错误消息
      */
     public static <T> Result<T> error() {
         return of(ResultEnum.ERROR);
@@ -138,12 +138,10 @@ public class Result<T> implements Serializable {
      * 返回错误消息
      *
      * @param msg 返回内容
-     * @return 警告消息
+     * @return Result<T> 警告消息
      */
     public static <T> Result<T> error(String msg) {
-        return new Result()
-                .setCode(ResultEnum.ERROR.getCode())
-                .setMessage(msg);
+        return new Result<>(ResultEnum.ERROR.getCode(), msg, null);
     }
 
     /**
@@ -151,52 +149,38 @@ public class Result<T> implements Serializable {
      *
      * @param code 返回状态码
      * @param msg  返回内容
-     * @return 警告消息
+     * @return Result<T> 警告消息
      */
     public static <T> Result<T> error(int code, String msg) {
-        return new Result<T>()
-                .setCode(code)
-                .setMessage(msg);
+        return new Result<>(code, msg, null);
     }
 
     /**
      * 返回错误消息：参数错误异常
      *
      * @param msg 返回内容
-     * @return 警告消息
+     * @return Result<T> 警告消息
      */
     public static <T> Result<T> paramError(String msg) {
-        return new Result<T>()
-                .setCode(ResultEnum.PARAMETER_ERR.getCode())
-                .setMessage(msg);
+        return new Result<>(ResultEnum.PARAMETER_ERR.getCode(), msg, null);
     }
 
     /**
      * 返回错误消息
      *
      * @param resultEnum 返回结果枚举
-     * @return 警告消息
+     * @return Result<T> 警告消息
      */
     public static <T> Result<T> error(ResultEnum resultEnum) {
         return of(resultEnum);
     }
 
-//    /**
-//     * 返回错误消息
-//     *
-//     * @param ex 异常
-//     * @return 警告消息
-//     */
-//    public static <T> Result<T> error(BizException ex) {
-//        return error(ex.getCode(), ex.getMessage());
-//    }
-
     /**
      * 默认降级结果
      *
-     * @return
+     * @return Result<T> 默认错误消息
      */
-    public static <T> Result<T> defaultFB() {
+    public static <T> Result<T> defaultFb() {
         return Result.error(ResultEnum.REQUEST_TIMEOUT);
     }
 }
