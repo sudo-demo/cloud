@@ -6,14 +6,12 @@ import com.example.common.config.Security.PermissionService;
 import com.example.common.domain.SystemLog;
 import com.example.common.service.SystemLogService;
 import com.example.common.util.HttpUtils;
-import com.example.common.util.SecurityUtils;
+import com.example.common.util.SecurityUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.time.Instant;
-import java.util.Date;
 import java.util.Objects;
 
 
@@ -47,9 +45,9 @@ public class LogAspect {
         JSONObject jsonObject = JSONUtil.parseObj(jsonStr);
 
         SystemLog systemLog = new SystemLog();
-        systemLog.setUserId(SecurityUtils.getUserId())
-                .setUsername(SecurityUtils.getUserName())
-                .setRoleId(SecurityUtils.getRoleId())
+        systemLog.setUserId(SecurityUtil.getUserId())
+                .setUsername(SecurityUtil.getUserName())
+                .setRoleId(SecurityUtil.getRoleId())
                 .setApiName(permissionService.getContext().getApiName())
                 .setApiUrl(Objects.requireNonNull(HttpUtils.getRequest()).getRequestURI())
                 .setRequest(HttpUtils.getRequestParam())

@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 
-public class SecurityUtils {
+public class SecurityUtil {
 
     public static User getLoginUser(HttpServletRequest request)
     {

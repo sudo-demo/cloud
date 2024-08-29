@@ -22,7 +22,7 @@ public class SqlUtil
      */
     public static String escapeOrderBySql(String value)
     {
-        if (StringUtils.isNotEmpty(value) && !isValidOrderBySql(value))
+        if (StringUtil.isNotEmpty(value) && !isValidOrderBySql(value))
         {
 //            throw new BizException("参数不符合规范，不能进行查询");
         }

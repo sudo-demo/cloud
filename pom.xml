@@ -29,9 +29,6 @@
         <module>gateway</module>
         <module>common</module>
         <module>system</module>
-        <module>untitled</module>
-        <module>demo</module>
-        <module>demo</module>
         <module>demo</module>
     </modules>
 

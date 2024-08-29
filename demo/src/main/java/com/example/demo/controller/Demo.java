@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.common.annotation.RepeatSubmit;
 import com.example.common.domain.SystemUser;
 import com.example.common.model.PageResult;
 import com.example.demo.service.DemoService;
@@ -17,6 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
+import com.example.common.util.LockUtil;
 
 /**
  * 
@@ -62,9 +64,24 @@ public class Demo {
         orDefault.demo2();
     }
 
+    @RepeatSubmit
     @ApiOperation("createDemo")
     @PostMapping("/createDemo")
     public void createDemo(){
-
+        String lockKey = "myLockKey";
+        boolean tryLock = LockUtil.tryLock(lockKey, 1, 30);
+        System.out.println(tryLock);
+//        if (LockUtil.tryLock(lockKey, 10, 130)) {
+//            try {
+//                // 执行需要锁定的任务
+//                System.out.println("执行需要锁定的任务");
+//                // ...
+//            } finally {
+////                LockUtil.unlock(lockKey);
+//            }
+//        } else {
+//            // 获取锁失败，处理相应逻辑
+//            // ...
+//        }
     }
 }

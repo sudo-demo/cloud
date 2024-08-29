@@ -10,7 +10,7 @@ import java.util.*;
  * 
  * @author meng
  */
-public class StringUtils extends org.apache.commons.lang3.StringUtils
+public class StringUtil extends org.apache.commons.lang3.StringUtils
 {
     /** 空字符串 */
     private static final String NULLSTR = "";
@@ -292,7 +292,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     public static final List<String> str2List(String str, String sep, boolean filterBlank, boolean trim)
     {
         List<String> list = new ArrayList<String>();
-        if (StringUtils.isEmpty(str))
+        if (StringUtil.isEmpty(str))
         {
             return list;
         }

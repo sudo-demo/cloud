@@ -1,10 +1,14 @@
 package com.example.common.config;
 
+import com.example.common.util.LockUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
@@ -93,5 +97,25 @@ public class RedisConfig extends CachingConfigurerSupport {
         return stringRedisTemplate;// 返回配置好的StringRedisTemplate实例
     }
 
+
+    @Bean
+    public RedissonClient redissonClient(@Value("${spring.redis.host}") String host,
+                                         @Value("${spring.redis.port}") int port,
+                                         @Value("${spring.redis.password}") String password,
+                                         @Value("${spring.redis.database}") int database) {
+
+        Config config = new Config();
+        config.useSingleServer()
+                .setAddress("redis://" + host + ":" + port) // 设置 Redis 服务器地址
+                .setPassword(password) // 设置 Redis 服务器密码
+                .setDatabase(database) // 设置默认数据库
+                .setConnectionPoolSize(100) // 设置连接池大小
+                .setTimeout(3000); // 设置连接超时时间
+
+        RedissonClient redissonClient = Redisson.create(config);
+        LockUtil.setKeyPrefix(keyPrefix);//设置前缀
+        LockUtil.setRedissonClient(redissonClient);//设置RedissonClient实例
+        return redissonClient;
+    }
 
 }

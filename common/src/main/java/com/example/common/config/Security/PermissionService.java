@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.example.common.config.Mybatis.DataScopeInterceptor;
 import com.example.common.domain.VRoleApi;
 import com.example.common.util.RedisUtil;
+import com.example.common.util.SecurityUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,7 +16,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import com.example.common.util.SecurityUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -102,8 +102,8 @@ public class PermissionService {
      */
     public void clearDataScope(HttpServletRequest request) {
         clearContext();
-        getContext().setRoleIds(SecurityUtils.getRoleIds());
-        getContext().setRoleId(SecurityUtils.getRoleId());
+        getContext().setRoleIds(SecurityUtil.getRoleIds());
+        getContext().setRoleId(SecurityUtil.getRoleId());
         try {
             HandlerExecutionChain executionChain = requestMappingHandlerMapping.getHandler(request);
             if (executionChain != null && (executionChain.getHandler() instanceof HandlerMethod)) {

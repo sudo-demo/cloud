@@ -3,7 +3,7 @@ package com.example.common.aspect;
 import com.example.common.annotation.RepeatSubmit;
 import com.example.common.util.HttpUtils;
 import com.example.common.util.RedisUtil;
-import com.example.common.util.SecurityUtils;
+import com.example.common.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Aspect
 public class RepeatSubmitAspect {
+
+    private static final String REPEAT_SUBMIT_PREFIX = "repeat_submit:";
 
     /**
      * 环绕通知：检查是否存在重复提交请求
@@ -39,7 +41,7 @@ public class RepeatSubmitAspect {
         }
         String requestUri = HttpUtils.getRequest().getRequestURI();
 
-        String requestKey = getRequestKey(String.valueOf(SecurityUtils.getUserId()), requestUri, args);
+        String requestKey = getRequestKey(String.valueOf(SecurityUtil.getUserId()), requestUri, args);
         // 获取当前时间
         long currentTime = System.currentTimeMillis();
 
@@ -75,7 +77,7 @@ public class RepeatSubmitAspect {
                 if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
-            return hexString.toString(); // 返回哈希值作为请求唯一标识
+            return REPEAT_SUBMIT_PREFIX + hexString; // 返回哈希值作为请求唯一标识
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("哈希算法不可用", e);
         }

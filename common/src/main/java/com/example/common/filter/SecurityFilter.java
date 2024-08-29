@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.example.common.util.SecurityUtils;
+import com.example.common.util.SecurityUtil;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,7 +23,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        User user = SecurityUtils.getLoginUser(httpServletRequest);
+        User user = SecurityUtil.getLoginUser(httpServletRequest);
         if(ObjectUtil.isNotEmpty(user)){
             LoginUser loginUser = new LoginUser();
             loginUser.setUser(user);

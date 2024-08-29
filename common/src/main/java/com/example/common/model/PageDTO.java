@@ -3,7 +3,7 @@ package com.example.common.model;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.common.util.SqlUtil;
-import com.example.common.util.StringUtils;
+import com.example.common.util.StringUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -37,15 +37,15 @@ public class PageDTO implements Serializable {
         Optional<Long> size = Optional.ofNullable(getPageSize());
         Page<T> page = new Page<>(current.orElse(1L), size.orElse(10L));
         if (getDesc() != null) {
-            page.setOrders(StringUtils.toStrList(
+            page.setOrders(StringUtil.toStrList(
                             SqlUtil.filter(getDesc())).stream()
-                    .map((col) -> OrderItem.desc(StringUtils.humpToUnderline(col)))
+                    .map((col) -> OrderItem.desc(StringUtil.humpToUnderline(col)))
                     .collect(Collectors.toList()));
         }
         if (getAsc() != null) {
-            page.setOrders(StringUtils.toStrList(
+            page.setOrders(StringUtil.toStrList(
                             SqlUtil.filter(getAsc())).stream()
-                    .map((col) -> OrderItem.asc(StringUtils.humpToUnderline(col)))
+                    .map((col) -> OrderItem.asc(StringUtil.humpToUnderline(col)))
                     .collect(Collectors.toList()));
         }
         return page;

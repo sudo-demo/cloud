@@ -4,8 +4,6 @@ package com.example.common.util;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.signers.JWTSignerUtil;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONWriter;
 import com.example.common.domain.User;
 import org.jetbrains.annotations.Contract;
 import org.springframework.beans.factory.annotation.Value;
@@ -128,7 +126,7 @@ public class JwtUtil {
     public static String getToken(HttpServletRequest request){
         String token = request.getHeader(JwtUtil.getTokenHeader()); // 从header获取token
         // 如果前端设置了令牌前缀，则裁剪掉前缀
-        if (StringUtils.isNotEmpty(token) && token.startsWith(JwtUtil.getTokenHead())) {
+        if (StringUtil.isNotEmpty(token) && token.startsWith(JwtUtil.getTokenHead())) {
             token = token.replaceFirst(JwtUtil.getTokenHead(), ""); // 去掉前缀
         }
         return token; // 返回token
