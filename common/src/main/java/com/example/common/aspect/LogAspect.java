@@ -57,6 +57,7 @@ public class LogAspect {
                 .setIp(HttpUtils.getIpAddress());
 //                .setCreatedAt(Date.from(Instant.now()));
 
+
         systemLogService.saveLog(systemLog);
 
 //        System.out.println("请求："+HttpUtils.getRequestParam());

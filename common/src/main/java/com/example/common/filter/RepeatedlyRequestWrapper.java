@@ -115,7 +115,9 @@ public class RepeatedlyRequestWrapper extends HttpServletRequestWrapper {
             characterEncoding = StandardCharsets.UTF_8.name();
         }
         try {
-            return new String(requestBodyBytes, characterEncoding);
+            String jsonString = new String(requestBodyBytes, characterEncoding);
+            // 仅去除换行和缩进，保留字符串内部空格
+            return jsonString.replaceAll("\\r\\n|\\r|\\n|\\s{2,}", "");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

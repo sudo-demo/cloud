@@ -2,14 +2,9 @@ package com.example.system.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.common.model.BaseEntity;
-import com.example.common.model.PageDTO;
 import com.example.system.domain.SystemUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.Map;
 
 /**
 * 
@@ -19,7 +14,7 @@ import java.util.Map;
 */
 public interface SystemUserMapper extends BaseMapper<SystemUser> {
 
-    IPage<SystemUser> getUserPage(@Param("page") Page<SystemUser> page, @Param("baseEntity") BaseEntity baseEntity);
+    IPage<SystemUser> getUserPage(@Param("page") Page<SystemUser> page);
 
 
 }

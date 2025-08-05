@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SystemLogServiceImpl  extends ServiceImpl<SystemLogMapper, SystemLog> implements SystemLogService {
+
     @Override
     public void saveLog(SystemLog systemLog) {
         this.save(systemLog);

@@ -8,6 +8,9 @@ import com.example.system.domain.dto.LoginBody;
 import com.example.system.domain.dto.SystemUserDto;
 import com.example.common.model.PageDTO;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 
 /**
 * 
@@ -30,4 +33,5 @@ public interface SystemUserService extends IService<SystemUser> {
 
     void getAct(String data);
 
+    void exportExcel(HttpServletResponse response) throws IOException;
 }

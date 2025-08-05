@@ -1,7 +1,8 @@
 package com.example.common.config.Security;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.example.common.config.Mybatis.DataScopeInterceptor;
+//import com.example.common.config.Mybatis.DataScopeInterceptor;
+import com.example.common.config.Mybatis.RoleDataPermissionHandler;
 import com.example.common.domain.VRoleApi;
 import com.example.common.util.RedisUtil;
 import com.example.common.util.SecurityUtil;
@@ -84,7 +85,7 @@ public class PermissionService {
         private String conditions;
 
         @ApiModelProperty("处理类")
-        private Class<?> clazz = DataScopeInterceptor.class;
+        private Class<?> clazz = RoleDataPermissionHandler.class;
 
         @ApiModelProperty("处理方法")
         private String callMethod = "handleDataScope";

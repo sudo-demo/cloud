@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.example.common.model.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -19,14 +18,14 @@ import lombok.Data;
 @ApiModel("用户")
 @Data
 @TableName(value = "system_user")
-public class SystemUser extends BaseEntity {
-//    public class SystemUser implements Serializable {
+public class SystemUser implements Serializable {
 
+    private static final long serialVersionUID = -1794832418926415529L;
     /**
      * 用户ID，主键
      */
     @ApiModelProperty("用户id")
-    @TableId(value = "user_id", type = IdType.ASSIGN_ID)
+    @TableId(value = "user_id", type = IdType.AUTO)
     private Long userId;
     /**
      * 登录账号

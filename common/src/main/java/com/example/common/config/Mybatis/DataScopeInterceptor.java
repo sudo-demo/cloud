@@ -1,45 +1,20 @@
 package com.example.common.config.Mybatis;
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.common.config.Security.PermissionService;
-import com.example.common.model.PageDTO;
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SelectBody;
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Signature;
-import org.apache.ibatis.reflection.DefaultReflectorFactory;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.ReflectorFactory;
-import org.apache.ibatis.reflection.SystemMetaObject;
-import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
-import org.apache.ibatis.reflection.factory.ObjectFactory;
-import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
-import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.Properties;
-
 
 /**
  * 
@@ -57,22 +32,10 @@ import java.util.Properties;
  *  CacheKey.class: 表示缓存键。
  *  BoundSql.class: 表示绑定的 SQL 语句。
  */
-@Component
-@Intercepts(
-        {
-                @Signature(
-                        type = Executor.class,
-                        method = "query",
-                        args = {
-                                MappedStatement.class,
-                                Object.class,
-                                RowBounds.class,
-                                ResultHandler.class,
-                                CacheKey.class,
-                                BoundSql.class
-                        }),
-        }
-)
+//@Component
+//@Intercepts({
+//        @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
+//})
 public class DataScopeInterceptor implements Interceptor {
     @Resource
     PermissionService permissionService;
@@ -80,74 +43,64 @@ public class DataScopeInterceptor implements Interceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
 
-        Object[] args = invocation.getArgs();
-        MappedStatement mappedStatement = (MappedStatement) args[0];
-        Object parameter = args[1];
-        RowBounds rowBounds = (RowBounds) args[2];
-        ResultHandler resultHandler = (ResultHandler) args[3];
-        Executor executor = (Executor) invocation.getTarget();
-        CacheKey cacheKey;
-        BoundSql boundSql;
+        StatementHandler handler = (StatementHandler) invocation.getTarget();
+        String originalSql = handler.getBoundSql().getSql();
 
-
-        //由于逻辑关系，只会进入一次
-        if (args.length == 4) {
-            //4 个参数时
-            boundSql = mappedStatement.getBoundSql(parameter);
-//            cacheKey = executor.createCacheKey(mappedStatement, parameter, rowBounds, boundSql);
-        } else {
-            //6 个参数时
-//            cacheKey = (CacheKey) args[4];
-            boundSql = (BoundSql) args[5];
+        // 解析SQL
+        Statement statement = CCJSqlParserUtil.parse(originalSql);
+        if (statement instanceof Select) {
+            Select select = (Select) statement;
+            PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
         }
-
-            //获取到数据权限sql语句
-        Class<?> clazz = permissionService.getContext().getClazz();
-        // 获取并调用方法
-        Method method = clazz.getMethod(permissionService.getContext().getCallMethod());
-        Object invoke = method.invoke(clazz.newInstance());
-
-        //id为执行的mapper方法的全路径名，如com.metro.dao.UserMapper.insertUser
-        String id = mappedStatement.getId();
-        String sql = boundSql.getSql();
-        // 检查 SQL 是否已经被处理
-        if (sql.contains("/* DataScope Processed */")) {
-            return invocation.proceed(); // 如果已经处理过，直接执行
-        }
-        System.out.println(sql);
-        String newSql = null;
-        if(sql.contains("@DataScope")){
-            if (sql.toLowerCase().contains("where")) {
-                newSql = sql.replaceAll("@DataScope", String.format("%s", "and "+invoke.toString()));
-            } else {
-                newSql = sql.replaceAll("@DataScope", String.format("%s", "where "+invoke.toString()));
-            }
-            newSql = newSql + " /* DataScope Processed */";
-            //通过反射修改boundSql对象的sql语句
-            Field field = boundSql.getClass().getDeclaredField("sql");
-            field.setAccessible(true);
-            field.set(boundSql, newSql);// 获取修改后的 SQL
-        }else{
-            if (id.contains("com.example.system.mapper.SystemUserMapper.getUserPage")) {
-                Expression sqlSegmentExpression = null;
-                Statement sm = CCJSqlParserUtil.parse(sql);
-                Select select = (Select) sm;
-                SelectBody selectBody = select.getSelectBody();
-                PlainSelect plainSelect = (PlainSelect) selectBody;
-                sqlSegmentExpression = CCJSqlParserUtil.parseCondExpression(invoke.toString());
-                if (plainSelect.getWhere() == null) {
-                    plainSelect.setWhere(sqlSegmentExpression);
-                } else {
-                    AndExpression andExpression = new AndExpression(plainSelect.getWhere(), sqlSegmentExpression);
-                    plainSelect.setWhere(andExpression);
-                }
-                newSql = select + " /* DataScope Processed */";
-                //通过反射修改boundSql对象的sql语句
-                Field field = boundSql.getClass().getDeclaredField("sql");
-                field.setAccessible(true);
-                field.set(boundSql, newSql);// 获取修改后的 SQL
-            }
-        }
+//            //获取到数据权限sql语句
+//        Class<?> clazz = permissionService.getContext().getClazz();
+//        // 获取并调用方法
+//        Method method = clazz.getMethod(permissionService.getContext().getCallMethod());
+//        Object invoke = method.invoke(clazz.newInstance());
+//
+//        //id为执行的mapper方法的全路径名，如com.metro.dao.UserMapper.insertUser
+//        String id = mappedStatement.getId();
+//        String sql = boundSql.getSql();
+//        // 检查 SQL 是否已经被处理
+//        if (sql.contains("/* DataScope Processed */")) {
+//            return invocation.proceed(); // 如果已经处理过，直接执行
+//        }
+//        System.out.println(permissionService.getContext().getDataScope());
+//        System.out.println(sql);
+//        String newSql = null;
+//        //判断是否包含数据权限字段，如果有则替换掉
+//        if(sql.contains(permissionService.getContext().getDataScope())){
+//            if (sql.toLowerCase().contains("where")) {
+//                newSql = sql.replaceAll(permissionService.getContext().getDataScope(), String.format("%s", "and "+invoke.toString()));
+//            } else {
+//                newSql = sql.replaceAll(permissionService.getContext().getDataScope(), String.format("%s", "where "+invoke.toString()));
+//            }
+//            newSql = newSql + " /* DataScope Processed */";
+//            //通过反射修改boundSql对象的sql语句
+//            Field field = boundSql.getClass().getDeclaredField("sql");
+//            field.setAccessible(true);
+//            field.set(boundSql, newSql);// 获取修改后的 SQL
+//        }else{
+//            if (id.contains("com.example.system.mapper.SystemUserMapper.getUserPage")) {
+//                Expression sqlSegmentExpression = null;
+//                Statement sm = CCJSqlParserUtil.parse(sql);
+//                Select select = (Select) sm;
+//                SelectBody selectBody = select.getSelectBody();
+//                PlainSelect plainSelect = (PlainSelect) selectBody;
+//                sqlSegmentExpression = CCJSqlParserUtil.parseCondExpression(invoke.toString());
+//                if (plainSelect.getWhere() == null) {
+//                    plainSelect.setWhere(sqlSegmentExpression);
+//                } else {
+//                    AndExpression andExpression = new AndExpression(plainSelect.getWhere(), sqlSegmentExpression);
+//                    plainSelect.setWhere(andExpression);
+//                }
+//                newSql = select + " /* DataScope Processed */";
+//                //通过反射修改boundSql对象的sql语句
+//                Field field = boundSql.getClass().getDeclaredField("sql");
+//                field.setAccessible(true);
+//                field.set(boundSql, newSql);// 获取修改后的 SQL
+//            }
+//        }
 
         return invocation.proceed();
         //执行修改后的sql语句

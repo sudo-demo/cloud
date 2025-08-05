@@ -51,7 +51,7 @@ public class CustomAuthorizationManager implements AuthorizationManager <Request
         try{
             // 调用权限服务验证请求的权限
             if(!permissionService.verifyAuth(object.getRequest())){
-//                return new AuthorizationDecision(false);// 权限验证失败，不允许访问
+                return new AuthorizationDecision(false);// 权限验证失败，不允许访问
             }
         }catch (Exception exception){
             log.error("权限验证失败",exception); // 记录错误日志

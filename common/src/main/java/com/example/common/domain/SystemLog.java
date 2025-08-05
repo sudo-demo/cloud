@@ -1,8 +1,6 @@
 package com.example.common.domain;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -24,7 +22,7 @@ public class SystemLog implements Serializable {
     /**
      * 日志主键
      */
-    @TableField(value = "log_id")
+    @TableId(value = "log_id", type = IdType.AUTO)
     @ApiModelProperty(value = "日志主键")
     private Long logId;
 

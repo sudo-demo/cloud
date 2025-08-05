@@ -1,0 +1,8 @@
+com/example/demo/DemoApplication.class
+com/example/demo/service/impl/Demo2ServiceImpl.class
+com/example/demo/service/DemoService.class
+com/example/demo/controller/Demo$1.class
+com/example/demo/feign/SystemClient.class
+com/example/demo/service/impl/Demo1ServiceImpl.class
+com/example/demo/config/ClientConfig.class
+com/example/demo/controller/Demo.class

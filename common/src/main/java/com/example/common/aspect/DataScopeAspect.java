@@ -26,6 +26,8 @@ public class DataScopeAspect {
         String callMethod = controllerDataScope.callMethod();
         permissionService.getContext().setClazz(clazz);
         permissionService.getContext().setCallMethod(callMethod);
+        permissionService.getContext().setMappedStatementId(controllerDataScope.mappedStatementId());
+        permissionService.getContext().setMasterAlias(controllerDataScope.masterAlias());
 //        try {
 //            // 获取并调用方法
 //            Method method = clazz.getMethod(callMethod);

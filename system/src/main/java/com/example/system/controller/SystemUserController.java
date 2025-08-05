@@ -17,7 +17,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RepeatSubmit
 @RestController//@RestController默认情况下，@RestController注解会将返回的赌侠ing数据转换为JSON格式，这样方便前端用`。
@@ -30,13 +32,14 @@ public class SystemUserController {
 
     @ApiOperation("新增用户")
     @PostMapping("add")
-    public Result<Void> add(@Validated(Add.class) @RequestBody SystemUserDto systemUserDto){
+    public Result<Void> created(@Validated(Add.class) @RequestBody SystemUserDto systemUserDto){
         systemUserService.created(systemUserDto);
         return Result.success();
 
     }
 
     @Log
+    @RepeatSubmit
     @ApiOperation("修改用户")
     @PostMapping("update")
     public Result<Void> updated(@Validated(Update.class) @RequestBody SystemUserDto systemUserDto){
@@ -68,4 +71,10 @@ public class SystemUserController {
         return Result.success(info);
     }
 
+
+    @ApiOperation("导出用户")
+    @GetMapping("exportExcel")
+    public void exportExcel(HttpServletResponse response) throws IOException {
+        systemUserService.exportExcel(response);
+    }
 }

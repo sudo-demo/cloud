@@ -1,39 +1,40 @@
 package com.example.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.http.HttpUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.alibaba.excel.EasyExcel;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.common.annotation.DataScope;
-import com.example.common.model.BaseEntity;
-import com.example.common.util.HttpUtils;
+import com.example.common.model.Permission;
 import com.example.common.util.JwtUtil;
+import com.example.system.domain.SystemRole;
 import com.example.system.domain.SystemUser;
 import com.example.system.domain.dto.LoginBody;
 import com.example.system.domain.dto.SystemUserDto;
+import com.example.system.domain.excel.SystemUserExcelDto;
 import com.example.system.service.SystemUserService;
 import com.example.system.mapper.SystemUserMapper;
 import com.example.common.domain.LoginUser;
 import com.example.common.exception.validateException;
 import com.example.common.model.PageDTO;
+import com.sun.deploy.net.URLEncoder;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.HandlerExecutionChain;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
- * 
  * @description 针对表【system_user(用户信息表)】的数据库操作Service实现
  * @createDate 2023-09-01 10:40:37
  */
@@ -44,21 +45,20 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
     @Autowired
     private SystemUserMapper systemUserMapper;
 
-//    @DataScope(clazz = SystemUserServiceImpl.class, callMethod = "setUserDataScope")
+    //    @DataScope(clazz = SystemUserServiceImpl.class, callMethod = "setUserDataScope")
     @DataScope()
     @Override
     public IPage<SystemUser> getUserPage(PageDTO pageDTO) {
         Page<SystemUser> page = pageDTO.toPage();
 //        pageDTO.setSql("@DataScope");
-        BaseEntity baseEntity = new BaseEntity();
-        IPage<SystemUser> systemUserPage = baseMapper.getUserPage(page,baseEntity);
+        IPage<SystemUser> systemUserPage = baseMapper.getUserPage(page);
 //        LambdaQueryWrapper<SystemUser> wrapper = new LambdaQueryWrapper<>();
 //
 //        IPage<SystemUser> systemUserPage = systemUserMapper.selectPage(page, wrapper);
         return systemUserPage;
     }
 
-    public String setUserDataScope(){
+    public String setUserDataScope() {
         return "2 = 1";
     }
 
@@ -78,7 +78,9 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
         }
         systemUserDto.setUserId(null);
         SystemUser systemUser = BeanUtil.copyProperties(systemUserDto, SystemUser.class);
+        systemUser.setUserId(null);
         systemUserMapper.insert(systemUser);
+        System.out.println(systemUser.getUserId());
     }
 
     @Override
@@ -105,7 +107,7 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginBody.getLoginId(), loginBody.getPassword());
         // 调用AuthenticationManager的authenticate方法进行认证
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        if(authentication == null) {
+        if (authentication == null) {
             throw new RuntimeException("用户名或密码错误");
         }
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
@@ -113,8 +115,41 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
         return jwtUtil.createToken(loginUser.getUser());
     }
 
-    public void getAct(String data){
-        System.out.printf("到了："+data);
+    public void getAct(String data) {
+        System.out.printf("到了：" + data);
+    }
+
+    /**
+     *
+     * https://easyexcel.opensource.alibaba.com
+     * @param response
+     * @throws IOException
+     */
+    @Override
+    public void exportExcel(HttpServletResponse response) throws IOException {
+        QueryWrapper<SystemUser> queryWrapper = new QueryWrapper<>();
+        List<SystemUser> systemUsers = baseMapper.selectList(queryWrapper);
+        // 转换为 SystemUserExcelDto 列表
+        List<SystemUserExcelDto> dtoList = systemUsers.stream().map(user -> {
+            SystemUserExcelDto dto = new SystemUserExcelDto();
+            BeanUtils.copyProperties(user, dto);
+            return dto;
+        }).collect(Collectors.toList());
+
+
+        // 设置响应头，告诉浏览器这是个Excel文件
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        // 这里文件名需要URL编码，避免中文乱码
+        String fileName = URLEncoder.encode("系统用户列表", "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+
+        // 写出Excel，自动关闭流
+        EasyExcel.write(response.getOutputStream(), SystemUserExcelDto.class)
+                .sheet("用户数据")
+                .doWrite(dtoList);
+
+
     }
 }
 

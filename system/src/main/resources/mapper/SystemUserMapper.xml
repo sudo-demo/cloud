@@ -24,11 +24,13 @@
     </resultMap>
 
     <select id="getUserPage" resultMap="BaseResultMap">
+        <bind name="dataScope" value="@com.example.common.model.Permission@getDataScope()" />
+
         SELECT
             *
         FROM system_user su
         where EXISTS (SELECT *
                       from system_user_role sur
-                      where sur.user_id = su.user_id)
+                      where sur.user_id = su.user_id ${dataScope})
     </select>
 </mapper>

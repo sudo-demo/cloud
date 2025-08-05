@@ -1,6 +1,6 @@
 package com.example.common.annotation;
 
-import com.example.common.config.Mybatis.DataScopeInterceptor;
+import com.example.common.config.Mybatis.RoleDataPermissionHandler;
 
 import java.lang.annotation.*;
 
@@ -24,7 +24,7 @@ public @interface DataScope {
     /**
      * 回调类
      */
-    Class<?> clazz() default DataScopeInterceptor.class;
+    Class<?> clazz() default RoleDataPermissionHandler.class;
 
     /**
      * 回调方法名称

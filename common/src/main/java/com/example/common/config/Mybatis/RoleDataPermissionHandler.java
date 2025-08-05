@@ -6,15 +6,12 @@ import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.parser.JsqlParserSupport;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.example.common.config.Security.PermissionService;
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.Expression;
+import com.example.common.model.Permission;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectBody;
-import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.update.Update;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
@@ -24,6 +21,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import net.sf.jsqlparser.expression.Expression;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 
@@ -40,6 +38,11 @@ public class RoleDataPermissionHandler extends JsqlParserSupport implements Inne
     /**
      * 查询操作前置处理
      *
+     * 这是 MyBatis Plus InnerInterceptor 接口中定义的一个拦截点方法。
+     * 在执行查询（SELECT）操作之前调用。
+     * 你可以在这里对即将执行的 SQL 语句进行修改或增强，比如加上数据权限过滤条件。
+     * 你的代码里就是在这里读取原始 SQL，解析并拼接权限条件，最后替换成新的 SQL
+     *
      * @param executor      Executor(可能是代理对象)
      * @param ms            MappedStatement
      * @param parameter     parameter
@@ -54,45 +57,112 @@ public class RoleDataPermissionHandler extends JsqlParserSupport implements Inne
             return;
         }
         PluginUtils.MPBoundSql mpBs = PluginUtils.mpBoundSql(boundSql);
-        mpBs.sql(this.parserSingle(mpBs.sql(), ms.getId()));
+        String sql = mpBs.sql();
+        try {
+            // 反射调用权限条件生成方法
+            Class<?> clazz = permissionService.getContext().getClazz();
+            Method method = clazz.getMethod(permissionService.getContext().getCallMethod());
+            Object invoke = method.invoke(clazz.newInstance());
+            String whereStr = invoke.toString();
+            String dataScope = Permission.getDataScope();
+            if (sql.contains(dataScope)) {
+                // 替换占位符为权限条件（注意权限条件格式要正确）
+//                sql = sql.replace(permissionService.getContext().getDataScope(), "where " + whereStr + " ");
+                String sqlLower = sql.toLowerCase();
+                boolean hasWhere = sqlLower.contains(" where ");
+
+                String replacement = hasWhere ? " AND " + whereStr + " " : " WHERE " + whereStr + " ";
+                sql = sql.replace(dataScope, replacement);
+            } else {
+                // 没有占位符，用JSQLParser解析SQL，追加权限条件
+                Select select = (Select) CCJSqlParserUtil.parse(sql);
+                Expression permissionExp = CCJSqlParserUtil.parseCondExpression(whereStr);
+
+                SelectBody selectBody = select.getSelectBody();
+                if (selectBody instanceof PlainSelect) {
+                    PlainSelect plainSelect = (PlainSelect) selectBody;
+                    Expression oldWhere = plainSelect.getWhere();
+                    if (oldWhere == null) {
+                        plainSelect.setWhere(permissionExp);
+                    } else {
+                        plainSelect.setWhere(new AndExpression(oldWhere, permissionExp));
+                    }
+                }
+                sql = select.toString();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("权限条件生成失败", e);
+        }
+
+        mpBs.sql(this.parserSingle(sql, ms.getId()));
 
     }
 
 
     /**
      * 查询
+     *
+     * 这是你继承自 JsqlParserSupport 类的一个钩子方法，用于处理解析后的 Select 语句。
+     * 当你调用 parserSingle(sql, ms.getId()) 解析 SQL 时，会自动调用这个方法。
+     * 你可以在这里对解析后的 SQL 结构（抽象语法树 AST）进行更细粒度的操作，比如修改 WHERE 条件、添加 JOIN，或者重写查询字段。
      */
     @Override
     protected void processSelect(Select select, int index, String sql, Object obj) {
 
-        SelectBody selectBody = select.getSelectBody();
-        if (selectBody instanceof PlainSelect) {
-            System.out.println("PlainSelect:" + ((PlainSelect) selectBody).getWhere());
-            Expression sqlSegmentExpression = null;
-            try {
-                Class<?> clazz = permissionService.getContext().getClazz();
-                // 获取并调用方法
-                Method method = clazz.getMethod(permissionService.getContext().getCallMethod());
-                Object invoke = method.invoke(clazz.newInstance());
-                sqlSegmentExpression = CCJSqlParserUtil.parseCondExpression(invoke.toString());
-                System.out.println("返回值：" + invoke.toString());
-            } catch (JSQLParserException e) {
-                throw new RuntimeException(e);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            AndExpression andExpression = new AndExpression(((PlainSelect) selectBody).getWhere(), sqlSegmentExpression);
-            OrExpression orExpression = new OrExpression(((PlainSelect) selectBody).getWhere(), sqlSegmentExpression);
-
-            ((PlainSelect) selectBody).setWhere(orExpression);
-        } else if (selectBody instanceof SetOperationList) {
-
-        }
+//        SelectBody selectBody = select.getSelectBody();
+//        if (selectBody instanceof PlainSelect) {
+//            Expression where = ((PlainSelect) selectBody).getWhere();
+//
+//            System.out.println("PlainSelect:" + ((PlainSelect) selectBody).getWhere());
+//
+//            Expression sqlSegmentExpression = null;
+//            String whereStr = "";
+//            try {
+//                System.out.println("sql:" + sql);
+//                Class<?> clazz = permissionService.getContext().getClazz();
+//                // 获取并调用方法
+//                Method method = clazz.getMethod(permissionService.getContext().getCallMethod());
+//                Object invoke = method.invoke(clazz.newInstance());
+//                sqlSegmentExpression = CCJSqlParserUtil.parseCondExpression(invoke.toString());
+//                whereStr = invoke.toString();
+//                System.out.println("返回值：" + whereStr);
+//            } catch (JSQLParserException e) {
+//                throw new RuntimeException(e);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            Expression andExpression;
+//
+//            if(sql.contains(permissionService.getContext().getDataScope())){
+//                sql = sql.replace(permissionService.getContext().getDataScope(), "where "+whereStr);
+//                try {
+//                    select = (Select) CCJSqlParserUtil.parse(sql);
+//                } catch (JSQLParserException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }else{
+//                if(where ==  null){
+//                    andExpression = sqlSegmentExpression;
+//                }else{
+//                    andExpression = new AndExpression(((PlainSelect) selectBody).getWhere(), sqlSegmentExpression);
+//                }
+//            }
+//
+////            OrExpression orExpression = new OrExpression(((PlainSelect) selectBody).getWhere(), sqlSegmentExpression);
+//
+//
+////            ((PlainSelect) selectBody).setWhere(andExpression);
+//        } else if (selectBody instanceof SetOperationList) {
+//
+//        }
     }
 
     /**
      * 修改操作前置处理
+     *
+     * 这是你自己写的一个方法（并不是 MyBatis Plus InnerInterceptor 的接口方法），看起来是你计划在执行 UPDATE 操作之前调用的钩子。
+     * 你可以在这里对 UPDATE 语句做前置处理，比如增加权限控制、审计字段、日志等。
+     * 目前你代码里只是简单打印了参数，并调用了 parserSingle 解析 SQL，但没有修改 SQL
      *
      * @param executor  Executor(可能是代理对象)
      * @param ms        MappedStatement
@@ -101,18 +171,22 @@ public class RoleDataPermissionHandler extends JsqlParserSupport implements Inne
      */
     public void beforeUpdate(Executor executor, MappedStatement ms, Object parameter) throws SQLException {
         // do nothing
-        System.out.println(executor);
-        System.out.println(ms);
-        System.out.println(parameter);
+        System.out.println("修改1"+executor);
+        System.out.println("修改2"+ms);
+        System.out.println("修改3"+parameter);
 
         // 获取原始的 BoundSql 对象
-        BoundSql boundSql = ms.getBoundSql(parameter);
-        PluginUtils.MPBoundSql mpBs = PluginUtils.mpBoundSql(boundSql);
-        mpBs.sql(this.parserSingle(mpBs.sql(), ms.getId()));
+//        BoundSql boundSql = ms.getBoundSql(parameter);
+//        PluginUtils.MPBoundSql mpBs = PluginUtils.mpBoundSql(boundSql);
+//        mpBs.sql(this.parserSingle(mpBs.sql(), ms.getId()));
     }
 
     /**
      * 修改
+     *
+     * 这是你继承自 JsqlParserSupport 的另一个钩子方法，用于处理 UPDATE 语句的 AST。
+     * 当调用 parserSingle 解析 UPDATE 语句时会触发。
+     * 你可以在这里对 UPDATE 语句进行自定义修改，比如添加 WHERE 条件限制，防止误更新
      */
     @Override
     protected void processUpdate(Update update, int index, String sql, Object obj) {
@@ -134,6 +208,7 @@ public class RoleDataPermissionHandler extends JsqlParserSupport implements Inne
      * @return
      */
     public String handleDataScope() {
+
         return "1 = 1";
     }
 

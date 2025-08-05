@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.client.domain.ClientTemplate;
+import com.client.finance.tianyi.Finance;
 import com.example.common.annotation.RepeatSubmit;
 import com.example.common.domain.SystemUser;
 import com.example.common.model.PageResult;
@@ -83,5 +85,18 @@ public class Demo {
 //            // 获取锁失败，处理相应逻辑
 //            // ...
 //        }
+    }
+
+    @Resource
+    ClientTemplate  clientTemplate;
+
+    @ApiOperation("demo3")
+    @PostMapping("/demo3")
+    public void demo3(){
+        System.out.println(clientTemplate);
+        Finance finance = new Finance(clientTemplate);
+        Object proList = finance.getProList();
+        System.out.println(proList);
+        System.out.println(clientTemplate);
     }
 }

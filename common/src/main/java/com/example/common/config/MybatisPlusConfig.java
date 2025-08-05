@@ -2,8 +2,10 @@ package com.example.common.config;
 
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.example.common.config.Mybatis.DataScopeInterceptor;
+import com.example.common.config.Mybatis.RoleDataPermissionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,6 +25,7 @@ public class MybatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(roleDataPermissionHandler);
 
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor());//分页拦截器
 
@@ -30,19 +33,22 @@ public class MybatisPlusConfig {
         return interceptor;
     }
 
-    @Resource
-    DataScopeInterceptor dataScopeInterceptor;// 注入自定义的数据权限处理器
+//    @Resource
+//    DataScopeInterceptor dataScopeInterceptor;// 注入自定义的数据权限处理器
 
-    /**
-     * 自定义 MyBatis 配置
-     * @return ConfigurationCustomizer 自定义配置
-     */
-    @Bean
-    public ConfigurationCustomizer mybatisConfigurationCustomizer() {
-        return configuration -> {
-            // 创建并添加拦截器实例到配置中
-            configuration.addInterceptor(dataScopeInterceptor);
-        };
-    }
+    @Resource
+    RoleDataPermissionHandler roleDataPermissionHandler;
+
+//    /**
+//     * 自定义 MyBatis 配置
+//     * @return ConfigurationCustomizer 自定义配置
+//     */
+//    @Bean
+//    public ConfigurationCustomizer mybatisConfigurationCustomizer() {
+//        return configuration -> {
+//            // 创建并添加拦截器实例到配置中
+//            configuration.addInterceptor(dataScopeInterceptor);
+//        };
+//    }
 
 }
