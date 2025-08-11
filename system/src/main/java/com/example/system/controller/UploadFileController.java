@@ -20,7 +20,7 @@ public class UploadFileController {
 
     @ApiOperation("上传图片")
     @PostMapping("/images")
-    public Result images(@RequestParam("file") MultipartFile file){
+    public Result<UploadFileServiceImpl.FileUploadResponse> images(@RequestParam("file") MultipartFile file){
         UploadFileServiceImpl.FileUploadResponse response = uploadFileService.uploadImages(file);
         return Result.success(response);
     }

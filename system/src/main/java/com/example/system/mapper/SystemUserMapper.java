@@ -2,6 +2,7 @@ package com.example.system.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.common.annotation.DataScope;
 import com.example.system.domain.SystemUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -14,6 +15,7 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface SystemUserMapper extends BaseMapper<SystemUser> {
 
+    @DataScope()
     IPage<SystemUser> getUserPage(@Param("page") Page<SystemUser> page);
 
 

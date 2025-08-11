@@ -1,8 +1,8 @@
 package com.example.common.config.Security;
 
 import cn.hutool.core.util.ObjectUtil;
-//import com.example.common.config.Mybatis.DataScopeInterceptor;
-import com.example.common.config.Mybatis.RoleDataPermissionHandler;
+import com.example.common.config.Mybatis.DataScopeInterceptor;
+//import com.example.common.config.Mybatis.RoleDataPermissionHandler;
 import com.example.common.domain.VRoleApi;
 import com.example.common.util.RedisUtil;
 import com.example.common.util.SecurityUtil;
@@ -21,8 +21,11 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  *
@@ -85,10 +88,13 @@ public class PermissionService {
         private String conditions;
 
         @ApiModelProperty("处理类")
-        private Class<?> clazz = RoleDataPermissionHandler.class;
+        private Class<?> clazz = DataScopeInterceptor.class;
 
         @ApiModelProperty("处理方法")
         private String callMethod = "handleDataScope";
+
+        @ApiModelProperty("拼装语句后")
+        private BiFunction<VRoleApi, List<List<String>>, List<List<String>>> afterFunction;
 
     }
 
@@ -148,4 +154,17 @@ public class PermissionService {
             }
         }
     }
+
+    public void dataScope(String action, String appController) {
+        Set<Long> roleIdSet = getContext().getRoleIds();
+        getContext().setConditions(null);
+        getContext().setRoleIds(roleIdSet);
+        getContext().setAction(action);
+        if (!getContext().getAppController().equals(appController)) {
+            getContext().setAppController(appController);
+            init();
+        }
+    }
+
+
 }

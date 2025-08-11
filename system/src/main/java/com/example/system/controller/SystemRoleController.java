@@ -27,7 +27,7 @@ public class SystemRoleController {
 
     @ApiOperation("新增角色")
     @PostMapping("add")
-    public Result add(@Validated(Add.class) @RequestBody SystemRoleDto dto){
+    public Result created(@Validated(Add.class) @RequestBody SystemRoleDto dto){
         service.created(dto);
         return Result.success();
 

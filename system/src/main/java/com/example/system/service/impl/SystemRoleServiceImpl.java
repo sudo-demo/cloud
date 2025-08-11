@@ -51,8 +51,8 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleMapper, SystemR
         SystemRole roleInfo = mapper.getRoleInfo(dto.getRoleId());
         QueryWrapper<SystemRole> queryWrapper = new QueryWrapper<>();
         queryWrapper.isNull("deleted_at");
-        List<SystemRole> systemRoles = mapper.selectList(queryWrapper);
-        System.out.println(systemRoles);
+//        List<SystemRole> systemRoles = mapper.selectList(queryWrapper);
+//        System.out.println(systemRoles);
         SystemRole data = BeanUtil.copyProperties(dto, SystemRole.class);
         if (ObjectUtil.isNull(roleInfo)) {
             mapper.insert(data);

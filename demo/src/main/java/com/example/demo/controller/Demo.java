@@ -5,6 +5,7 @@ import com.client.finance.tianyi.Finance;
 import com.example.common.annotation.RepeatSubmit;
 import com.example.common.domain.SystemUser;
 import com.example.common.model.PageResult;
+import com.example.common.util.proxy.ProxyUtils;
 import com.example.demo.service.DemoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -63,7 +64,7 @@ public class Demo {
                         }
                 )
         );
-        orDefault.demo2();
+        orDefault.demo1();
     }
 
     @RepeatSubmit
@@ -99,4 +100,14 @@ public class Demo {
         System.out.println(proList);
         System.out.println(clientTemplate);
     }
+
+    @Resource
+    ProxyUtils proxyUtils;
+
+    @ApiOperation("demo4")
+    @PostMapping("/demo4")
+    public void demo4(){
+//        proxyUtils.createProxy(DemoService.class).demo2("我的",12);
+    }
+
 }

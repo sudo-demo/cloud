@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Method;
 
 /**
  * 
@@ -24,17 +23,18 @@ public class DataScopeAspect {
     public void doBefore(JoinPoint point, DataScope controllerDataScope) {
         Class<?> clazz = controllerDataScope.clazz();
         String callMethod = controllerDataScope.callMethod();
+        //没有设置mappedStatementId，则使用当前方法名和类名为key
+        String mappedStatementId = controllerDataScope.mappedStatementId();
+        if (mappedStatementId == null || mappedStatementId.trim().isEmpty()) {
+            String methodName = point.getSignature().getName();
+            String className = point.getSignature().getDeclaringTypeName();
+            mappedStatementId = className + "." + methodName;
+        }
+
         permissionService.getContext().setClazz(clazz);
         permissionService.getContext().setCallMethod(callMethod);
-        permissionService.getContext().setMappedStatementId(controllerDataScope.mappedStatementId());
+        permissionService.getContext().setMappedStatementId(mappedStatementId);
         permissionService.getContext().setMasterAlias(controllerDataScope.masterAlias());
-//        try {
-//            // 获取并调用方法
-//            Method method = clazz.getMethod(callMethod);
-//            Object o = clazz.newInstance();
-//            method.invoke(o);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
     }
 }

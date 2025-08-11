@@ -7,21 +7,21 @@ import org.springframework.stereotype.Service;
 /**
  * 
  */
-//@Service
-//public class Demo2ServiceImpl implements DemoService {
-//
-//    @Override
-//    public void demo1() {
-//
-//    }
-//
-//    @Override
-//    public void demo2() {
-//        System.out.println("Demo2ServiceImpl");
-//    }
-//
-//    @Override
-//    public void demo3() {
-//
-//    }
-//}
+@Service
+public class Demo2ServiceImpl implements DemoService {
+
+    @Override
+    public void demo1() {
+
+    }
+
+    @Override
+    public void demo2(String name,Integer age) {
+        System.out.println("Demo1ServiceImpl"+name+age);
+    }
+
+    @Override
+    public void demo3() {
+
+    }
+}

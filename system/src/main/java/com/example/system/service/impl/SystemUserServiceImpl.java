@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.common.annotation.DataScope;
+import com.example.common.config.Security.PermissionService;
 import com.example.common.model.Permission;
 import com.example.common.util.JwtUtil;
 import com.example.system.domain.SystemRole;
@@ -45,17 +46,29 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
     @Autowired
     private SystemUserMapper systemUserMapper;
 
+    @Autowired
+    PermissionService permissionService;
+
     //    @DataScope(clazz = SystemUserServiceImpl.class, callMethod = "setUserDataScope")
-    @DataScope()
     @Override
     public IPage<SystemUser> getUserPage(PageDTO pageDTO) {
         Page<SystemUser> page = pageDTO.toPage();
-//        pageDTO.setSql("@DataScope");
-        IPage<SystemUser> systemUserPage = baseMapper.getUserPage(page);
-//        LambdaQueryWrapper<SystemUser> wrapper = new LambdaQueryWrapper<>();
+        permissionService.getContext().setAfterFunction((vRoleApi, conditions) -> {
+            // 弹出最后一个元素
+            if(vRoleApi.getRoleId().equals(1L)){
+                if (!conditions.isEmpty()) {
+                    List<String> where;
+                    where = conditions.remove(conditions.size() - 1);
+                    where.add("role_id = '1'");
+                    conditions.add(where);
+                }
+            }
+            return conditions;
+        });
+        //        LambdaQueryWrapper<SystemUser> wrapper = new LambdaQueryWrapper<>();
 //
 //        IPage<SystemUser> systemUserPage = systemUserMapper.selectPage(page, wrapper);
-        return systemUserPage;
+        return baseMapper.getUserPage(page);
     }
 
     public String setUserDataScope() {

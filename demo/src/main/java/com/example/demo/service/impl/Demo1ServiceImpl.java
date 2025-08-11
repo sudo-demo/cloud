@@ -16,8 +16,8 @@ public class Demo1ServiceImpl implements DemoService {
     }
 
     @Override
-    public void demo2() {
-        System.out.println("Demo1ServiceImpl");
+    public void demo2(String name,Integer age) {
+        System.out.println("Demo1ServiceImpl"+name+age);
     }
 
     @Override

@@ -1,12 +1,16 @@
 package com.example.common.config.Mybatis;
 
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.parser.JsqlParserSupport;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.example.common.config.Security.PermissionService;
+import com.example.common.domain.VRoleApi;
 import com.example.common.model.Permission;
+import com.example.common.util.SecurityUtil;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.PlainSelect;
@@ -18,15 +22,20 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+
 import net.sf.jsqlparser.expression.Expression;
+
 import java.lang.reflect.Method;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
- * 
+ * 角色数据权限处理器
  */
 @Component
 public class RoleDataPermissionHandler extends JsqlParserSupport implements InnerInterceptor {
@@ -34,10 +43,12 @@ public class RoleDataPermissionHandler extends JsqlParserSupport implements Inne
     @Resource
     PermissionService permissionService;
 
+    @Resource
+    private ApplicationContext applicationContext;
 
     /**
      * 查询操作前置处理
-     *
+     * <p>
      * 这是 MyBatis Plus InnerInterceptor 接口中定义的一个拦截点方法。
      * 在执行查询（SELECT）操作之前调用。
      * 你可以在这里对即将执行的 SQL 语句进行修改或增强，比如加上数据权限过滤条件。
@@ -49,11 +60,13 @@ public class RoleDataPermissionHandler extends JsqlParserSupport implements Inne
      * @param rowBounds     rowBounds
      * @param resultHandler resultHandler
      * @param boundSql      boundSql
-     * @throws SQLException
      */
     @Override
-    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
+    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         if (InterceptorIgnoreHelper.willIgnoreDataPermission(ms.getId())) {
+            return;
+        }
+        if (!ms.getId().equals(permissionService.getContext().getMappedStatementId())) {
             return;
         }
         PluginUtils.MPBoundSql mpBs = PluginUtils.mpBoundSql(boundSql);
@@ -61,13 +74,16 @@ public class RoleDataPermissionHandler extends JsqlParserSupport implements Inne
         try {
             // 反射调用权限条件生成方法
             Class<?> clazz = permissionService.getContext().getClazz();
+            Object bean = applicationContext.getBean(clazz);
             Method method = clazz.getMethod(permissionService.getContext().getCallMethod());
-            Object invoke = method.invoke(clazz.newInstance());
+            Object invoke = method.invoke(bean);
             String whereStr = invoke.toString();
+            if (StrUtil.isBlank(whereStr)) {
+                return;
+            }
             String dataScope = Permission.getDataScope();
             if (sql.contains(dataScope)) {
                 // 替换占位符为权限条件（注意权限条件格式要正确）
-//                sql = sql.replace(permissionService.getContext().getDataScope(), "where " + whereStr + " ");
                 String sqlLower = sql.toLowerCase();
                 boolean hasWhere = sqlLower.contains(" where ");
 
@@ -101,7 +117,7 @@ public class RoleDataPermissionHandler extends JsqlParserSupport implements Inne
 
     /**
      * 查询
-     *
+     * <p>
      * 这是你继承自 JsqlParserSupport 类的一个钩子方法，用于处理解析后的 Select 语句。
      * 当你调用 parserSingle(sql, ms.getId()) 解析 SQL 时，会自动调用这个方法。
      * 你可以在这里对解析后的 SQL 结构（抽象语法树 AST）进行更细粒度的操作，比如修改 WHERE 条件、添加 JOIN，或者重写查询字段。
@@ -109,57 +125,11 @@ public class RoleDataPermissionHandler extends JsqlParserSupport implements Inne
     @Override
     protected void processSelect(Select select, int index, String sql, Object obj) {
 
-//        SelectBody selectBody = select.getSelectBody();
-//        if (selectBody instanceof PlainSelect) {
-//            Expression where = ((PlainSelect) selectBody).getWhere();
-//
-//            System.out.println("PlainSelect:" + ((PlainSelect) selectBody).getWhere());
-//
-//            Expression sqlSegmentExpression = null;
-//            String whereStr = "";
-//            try {
-//                System.out.println("sql:" + sql);
-//                Class<?> clazz = permissionService.getContext().getClazz();
-//                // 获取并调用方法
-//                Method method = clazz.getMethod(permissionService.getContext().getCallMethod());
-//                Object invoke = method.invoke(clazz.newInstance());
-//                sqlSegmentExpression = CCJSqlParserUtil.parseCondExpression(invoke.toString());
-//                whereStr = invoke.toString();
-//                System.out.println("返回值：" + whereStr);
-//            } catch (JSQLParserException e) {
-//                throw new RuntimeException(e);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            Expression andExpression;
-//
-//            if(sql.contains(permissionService.getContext().getDataScope())){
-//                sql = sql.replace(permissionService.getContext().getDataScope(), "where "+whereStr);
-//                try {
-//                    select = (Select) CCJSqlParserUtil.parse(sql);
-//                } catch (JSQLParserException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }else{
-//                if(where ==  null){
-//                    andExpression = sqlSegmentExpression;
-//                }else{
-//                    andExpression = new AndExpression(((PlainSelect) selectBody).getWhere(), sqlSegmentExpression);
-//                }
-//            }
-//
-////            OrExpression orExpression = new OrExpression(((PlainSelect) selectBody).getWhere(), sqlSegmentExpression);
-//
-//
-////            ((PlainSelect) selectBody).setWhere(andExpression);
-//        } else if (selectBody instanceof SetOperationList) {
-//
-//        }
     }
 
     /**
      * 修改操作前置处理
-     *
+     * <p>
      * 这是你自己写的一个方法（并不是 MyBatis Plus InnerInterceptor 的接口方法），看起来是你计划在执行 UPDATE 操作之前调用的钩子。
      * 你可以在这里对 UPDATE 语句做前置处理，比如增加权限控制、审计字段、日志等。
      * 目前你代码里只是简单打印了参数，并调用了 parserSingle 解析 SQL，但没有修改 SQL
@@ -167,49 +137,84 @@ public class RoleDataPermissionHandler extends JsqlParserSupport implements Inne
      * @param executor  Executor(可能是代理对象)
      * @param ms        MappedStatement
      * @param parameter parameter
-     * @throws SQLException
      */
-    public void beforeUpdate(Executor executor, MappedStatement ms, Object parameter) throws SQLException {
-        // do nothing
-        System.out.println("修改1"+executor);
-        System.out.println("修改2"+ms);
-        System.out.println("修改3"+parameter);
+    @Override
+    public void beforeUpdate(Executor executor, MappedStatement ms, Object parameter) {
 
-        // 获取原始的 BoundSql 对象
-//        BoundSql boundSql = ms.getBoundSql(parameter);
-//        PluginUtils.MPBoundSql mpBs = PluginUtils.mpBoundSql(boundSql);
-//        mpBs.sql(this.parserSingle(mpBs.sql(), ms.getId()));
     }
 
     /**
      * 修改
-     *
+     * <p>
      * 这是你继承自 JsqlParserSupport 的另一个钩子方法，用于处理 UPDATE 语句的 AST。
      * 当调用 parserSingle 解析 UPDATE 语句时会触发。
      * 你可以在这里对 UPDATE 语句进行自定义修改，比如添加 WHERE 条件限制，防止误更新
      */
     @Override
     protected void processUpdate(Update update, int index, String sql, Object obj) {
-        // 在执行 UPDATE 语句前的自定义逻辑
-        System.out.println("在执行 UPDATE 语句前的自定义逻辑");
-        System.out.println("update:" + update);
-        System.out.println("index:" + index);
-        System.out.println("sql:" + sql);
-        System.out.println("sql:" + obj);
 
-
-        // 在执行 UPDATE 语句后的自定义逻辑
-        System.out.println("在执行 UPDATE 语句后的自定义逻辑");
     }
 
     /**
      * 处理数据权限
-     *
-     * @return
      */
-    public String handleDataScope() {
+    public StringBuilder handleDataScope() {
+        StringBuilder sqlString = new StringBuilder();
 
-        return "1 = 1";
+        List<List<String>> conditions = new ArrayList<>();
+        Map<String, VRoleApi> currentActionRoleAuth = permissionService.getContext().getCurrentActionRoleAuth();
+
+        String masterAlias = permissionService.getContext().getMasterAlias();
+        Long userId = SecurityUtil.getUserId();
+        Long roleId = SecurityUtil.getRoleId();
+
+        currentActionRoleAuth.forEach((action, vRoleApi) -> {
+
+//            vRoleApi.setDataScope("user_id");
+//            vRoleApi.setDataKey("user_type");
+//            vRoleApi.setOperatingStatus("100,200");
+
+            List<String> condition = new ArrayList<>();
+
+            if ("%".equals(vRoleApi.getDataScope()) && "%".equals(vRoleApi.getOperatingStatus())) {
+                conditions.clear();
+                return;
+            }
+            switch (vRoleApi.getDataScope()) {
+                case "user_id":
+                    condition.add(StrUtil.format(" {}user_id = '{}'", masterAlias, userId));
+                    break;
+                case "role_id":
+                    condition.add(StrUtil.format(" {}role_id = '{}'", masterAlias, roleId));
+                    break;
+
+            }
+            if (!"%".equals(vRoleApi.getOperatingStatus())) {
+                if (vRoleApi.getOperatingStatus().contains(",")) {
+                    String[] split = vRoleApi.getOperatingStatus().split(",");
+                    String inString = "'" + ArrayUtil.join(split, "','") + "'";
+                    condition.add(StrUtil.format(" {}{} in ({})", masterAlias, vRoleApi.getDataKey(), inString));
+                } else {
+                    condition.add(StrUtil.format(" {}{} = '{}'", masterAlias, vRoleApi.getDataKey(), vRoleApi.getOperatingStatus()));
+                }
+            }
+
+            if (!condition.isEmpty()) {
+                conditions.add(condition);
+            }
+            if(permissionService.getContext().getAfterFunction() != null){
+                permissionService.getContext().getAfterFunction().apply(vRoleApi,conditions);
+            }
+
+        });
+
+        if (!conditions.isEmpty()) {
+            conditions.forEach(condition -> {
+                sqlString.append("(").append(String.join(" AND ", condition)).append(")");
+            });
+        }
+        return sqlString;
+
     }
 
 

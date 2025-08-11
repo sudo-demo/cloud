@@ -10,6 +10,10 @@ public class validateException extends RuntimeException{
         super(message);
     }
 
+    public validateException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public validateException(String[] message) {
         super(StringUtils.join(message, ","));
     }

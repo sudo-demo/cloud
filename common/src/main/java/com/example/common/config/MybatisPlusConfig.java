@@ -18,6 +18,9 @@ import javax.annotation.Resource;
 @Configuration
 public class MybatisPlusConfig {
 
+    @Resource
+    RoleDataPermissionHandler roleDataPermissionHandler;
+
     /**
      * 创建 MybatisPlusInterceptor 实例
      * @return MybatisPlusInterceptor 拦截器
@@ -25,6 +28,7 @@ public class MybatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+
         interceptor.addInnerInterceptor(roleDataPermissionHandler);
 
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor());//分页拦截器
@@ -36,8 +40,6 @@ public class MybatisPlusConfig {
 //    @Resource
 //    DataScopeInterceptor dataScopeInterceptor;// 注入自定义的数据权限处理器
 
-    @Resource
-    RoleDataPermissionHandler roleDataPermissionHandler;
 
 //    /**
 //     * 自定义 MyBatis 配置
