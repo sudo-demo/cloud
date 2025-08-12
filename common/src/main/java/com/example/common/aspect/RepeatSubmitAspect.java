@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -21,6 +22,9 @@ import java.util.concurrent.TimeUnit;
 public class RepeatSubmitAspect {
 
     private static final String REPEAT_SUBMIT_PREFIX = "repeat_submit:";
+
+    @Resource
+    RedisUtil redisUtil;
 
     /**
      * 环绕通知：检查是否存在重复提交请求
@@ -46,7 +50,7 @@ public class RepeatSubmitAspect {
         long currentTime = System.currentTimeMillis();
 
         // 检查是否存在重复提交
-        Long lockTime = (Long) RedisUtil.get(requestKey);
+        Long lockTime = (Long) redisUtil.get(requestKey);
         if (lockTime != null && currentTime < lockTime) {
             log.warn("重复提交请求: {}", requestKey);
             throw new IllegalStateException("请勿重复提交请求");
@@ -54,13 +58,13 @@ public class RepeatSubmitAspect {
 
         // 设置新的锁定时间
         long lockDuration = TimeUnit.SECONDS.toMillis(repeatSubmit.lockTime());
-        RedisUtil.set(requestKey, currentTime + lockDuration);
+        redisUtil.set(requestKey, currentTime + lockDuration);
         try {
             // 执行目标方法
             return joinPoint.proceed();
         } finally {
             // 方法执行完毕后，移除锁定
-            RedisUtil.del(requestKey);
+            redisUtil.del(requestKey);
         }
     }
 

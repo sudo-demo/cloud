@@ -4,33 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cf6cf9ac-e46b-4d87-9aa6-7273111e6130" name="变更" comment="自学习-动态代理">
-      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/Interceptor/ProxyInterceptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/Interceptor/RoleProxyInterceptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/DemoController.java" afterDir="false" />
+    <list default="true" id="cf6cf9ac-e46b-4d87-9aa6-7273111e6130" name="变更" comment="自学习-权限回调">
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/RoleDataPermission2Handler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Proxy/ProxyConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/context/LoginUserContextHolder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/exception/ProxyException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/proxy/ProxyUtils2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/DataScopeAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/DataScopeAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/RepeatSubmitAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/aspect/RepeatSubmitAspect.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/RoleDataPermissionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Mybatis/RoleDataPermissionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/MybatisPlusConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/MybatisPlusConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/Permission2Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/Permission2Service.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/PermissionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/config/Security/PermissionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/exception/validateException.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/exception/validateException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/SecurityFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/filter/SecurityFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/LockUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/LockUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/RedisUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/RedisUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/SecurityUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/SecurityUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/proxy/ProxyUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/example/common/util/proxy/ProxyUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/demo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/controller/Demo.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/controller/Demo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/DemoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/DemoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/impl/Demo1ServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/impl/Demo1ServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/impl/Demo2ServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/com/example/demo/service/impl/Demo2ServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/test/java/demo2.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/target/classes/com/example/demo/controller/Demo$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/demo/target/classes/com/example/demo/controller/Demo$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/target/classes/com/example/demo/controller/Demo.class" beforeDir="false" afterPath="$PROJECT_DIR$/demo/target/classes/com/example/demo/controller/Demo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/target/classes/com/example/demo/service/DemoService.class" beforeDir="false" afterPath="$PROJECT_DIR$/demo/target/classes/com/example/demo/service/DemoService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/target/classes/com/example/demo/service/impl/Demo1ServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/demo/target/classes/com/example/demo/service/impl/Demo1ServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/target/test-classes/demo2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/SystemRoleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/SystemRoleController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/UploadFileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/UploadFileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemUserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/mapper/SystemUserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemRoleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemRoleServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemUserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemUserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/DemoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/controller/DemoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemUserRoleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/system/src/main/java/com/example/system/service/impl/SystemUserRoleServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,11 +172,11 @@
       <recent name="$PROJECT_DIR$/system/src/main/resources" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.example.common.util.proxy" />
       <recent name="com.example.common.config.Mybatis" />
+      <recent name="com.example.common.config.Security" />
       <recent name="com.example.common.util" />
       <recent name="com.example.demo.service.impl" />
-      <recent name="com.example.demo.service" />
-      <recent name="com.example.common.domain" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -263,8 +256,8 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.demo2" />
-      <item itemvalue="JUnit.demo2.demo" />
       <item itemvalue="JUnit.demo2.demo2" />
+      <item itemvalue="JUnit.demo2.demo" />
       <item itemvalue="Spring Boot.DemoApplication" />
       <item itemvalue="Spring Boot.GatewayApplication" />
       <item itemvalue="Spring Boot.SystemApplication" />
@@ -416,7 +409,10 @@
       <workItem from="1754392563173" duration="31123000" />
       <workItem from="1754555646947" duration="7286000" />
       <workItem from="1754616369251" duration="23966000" />
-      <workItem from="1754876219570" duration="14369000" />
+      <workItem from="1754876219570" duration="15385000" />
+      <workItem from="1754903610591" duration="2819000" />
+      <workItem from="1754907913670" duration="54000" />
+      <workItem from="1754907977063" duration="24404000" />
     </task>
     <task id="LOCAL-00001" summary="自学习">
       <option name="closed" value="true" />
@@ -466,7 +462,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754392277307</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="自学习-权限回调">
+      <option name="closed" value="true" />
+      <created>1754902108267</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1754902108268</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -485,7 +489,8 @@
     <MESSAGE value="自学习" />
     <MESSAGE value="自学习-文件上传" />
     <MESSAGE value="自学习-动态代理" />
-    <option name="LAST_COMMIT_MESSAGE" value="自学习-动态代理" />
+    <MESSAGE value="自学习-权限回调" />
+    <option name="LAST_COMMIT_MESSAGE" value="自学习-权限回调" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -521,6 +526,10 @@
         <watch expression="httpRequest.getContentType()" language="JAVA" />
       </configuration>
     </watches-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/cloud$SystemApplication.ic" NAME="SystemApplication 覆盖结果" MODIFIED="1754557660428" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />

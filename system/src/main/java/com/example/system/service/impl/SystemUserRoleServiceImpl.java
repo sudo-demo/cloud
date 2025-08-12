@@ -43,6 +43,9 @@ public class SystemUserRoleServiceImpl extends ServiceImpl<SystemUserRoleMapper,
     @Resource
     private SystemRoleApiService systemRoleApiService;
 
+    @Resource
+    RedisUtil redisUtil;
+
     @Override
     @Transactional()
     public void authorized(SystemUserRoleDto dto) {
@@ -81,13 +84,13 @@ public class SystemUserRoleServiceImpl extends ServiceImpl<SystemUserRoleMapper,
     public List<VRoleApi> cacheRole(Set<Long> roleId) {
         roleId.forEach(id-> {
             List<VRoleApi> roleApi = systemRoleApiService.getRoleApi(id);
-            RedisUtil.del("role_"+id);
+            redisUtil.del("role_"+id);
             if(roleApi.isEmpty()){
                 return;
             }
             List<VRoleApi> vRoleApis = buildTree(roleApi, 0L);
             vRoleApis.forEach(item->{
-                if(!RedisUtil.hset("role_"+id,item.getAppModel(),item)){
+                if(!redisUtil.hset("role_"+id,item.getAppModel(),item)){
                     throw new validateException("操作redis失败");
                 }
             });

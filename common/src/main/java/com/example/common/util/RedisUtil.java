@@ -1,86 +1,109 @@
 package com.example.common.util;
 
+import com.example.common.config.RedisConfig;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Redis工具类（线程安全版）
+ * 功能：封装Redis的常用操作，支持String、Hash、Set、List等多种数据结构
+ * 设计原则：
+ * 1. 基于Spring RedisTemplate实现，利用其线程安全特性
+ * 2. 支持键前缀，避免不同业务的键冲突
+ * 3. 提供友好的返回值和异常处理，简化业务层调用
+ */
 @Component
-//@Lazy
 public class RedisUtil {
 
-    private static RedisTemplate<String, Object> redisTemplate;
-
-    private static String keyPrefix;
+    /**
+     * Redis核心操作模板
+     * 由Spring容器注入，RedisTemplate内部通过连接池管理Redis连接，本身线程安全
+     */
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
-     * @PostConstruct
-     * 注解用于标记一个方法，该方法将在依赖注入完成后被自动调用。
-     * 它通常用于执行初始化操作，比如设置默认值、执行一些启动逻辑等。
-     * 这个方法只会被调用一次，且在构造函数和依赖注入之后执行。
+     * 键前缀（用于区分不同业务/环境的Redis键）
+     * volatile修饰：保证多线程环境下的可见性，防止读取到旧值
      */
+    private volatile String keyPrefix;
 
     /**
-     * 获取带上前缀key
+     * 注入Redis配置类（用于获取配置的键前缀）
      */
-    private static String getPrefixedKey(String key) {
-        return keyPrefix + key; // 添加前缀
+    @Resource
+    private RedisConfig redisConfig;
+
+    /**
+     * 初始化方法（依赖注入完成后自动执行）
+     * 作用：从配置类中获取键前缀，替代原有的静态setter方法，避免线程安全问题
+     */
+    @PostConstruct
+    public void init() {
+        this.keyPrefix = redisConfig.getKeyPrefix();
     }
 
     /**
-     * 设置前缀
-     */
-    public static void setKeyPrefix(String key) {
-         keyPrefix = key;
-    }
-
-    public static void setRedisTemplate(RedisTemplate<String, Object> template) {
-        redisTemplate = template;
-    }
-    // =============================common============================
-
-    /**
-     * 指定缓存失效时间
+     * 生成带前缀的键
+     * 业务意义：通过前缀区分不同服务或环境的键（如"order:"、"user:"），避免键名冲突
      *
-     * @param key  键
-     * @param time 时间(秒)
-     * @return
+     * @param key 原始键（业务层传入的未加前缀的键）
+     * @return 带前缀的完整键（如前缀"order:" + 原始键"1001" → "order:1001"）
      */
-    public static boolean expire(String key, long time) {
+    private String getPrefixedKey(String key) {
+        if (key == null) {
+            return null;
+        }
+        // 前缀为空时直接返回原始键，否则拼接前缀
+        return (keyPrefix != null && !keyPrefix.isEmpty()) ? keyPrefix + key : key;
+    }
+
+    // ============================= 通用操作 =============================
+
+    /**
+     * 设置键的过期时间
+     *
+     * @param key  原始键（无需带前缀）
+     * @param time 过期时间（秒），<=0时表示不设置过期时间
+     * @return 操作是否成功（true=成功，false=失败）
+     */
+    public boolean expire(String key, long time) {
         try {
             if (time > 0) {
+                // 调用RedisTemplate的expire方法设置过期时间
                 redisTemplate.expire(getPrefixedKey(key), time, TimeUnit.SECONDS);
             }
             return true;
         } catch (Exception e) {
+            // 实际生产环境建议使用日志框架（如SLF4J）记录异常
             e.printStackTrace();
             return false;
         }
     }
 
     /**
-     * 根据key 获取过期时间
+     * 获取键的剩余过期时间
      *
-     * @param key 键 不能为null
-     * @return 时间(秒) 返回0代表为永久有效
+     * @param key 原始键
+     * @return 剩余时间（秒），0表示永久有效
      */
-    public static long getExpire(String key) {
+    public long getExpire(String key) {
         return redisTemplate.getExpire(getPrefixedKey(key), TimeUnit.SECONDS);
     }
 
     /**
-     * 判断key是否存在
+     * 判断键是否存在
      *
-     * @param key 键
-     * @return true 存在 false不存在
+     * @param key 原始键
+     * @return true=存在，false=不存在
      */
-    public static boolean hasKey(String key) {
+    public boolean hasKey(String key) {
         try {
             return redisTemplate.hasKey(getPrefixedKey(key));
         } catch (Exception e) {
@@ -90,41 +113,47 @@ public class RedisUtil {
     }
 
     /**
-     * 删除缓存
+     * 删除缓存（支持批量删除）
      *
-     * @param key 可以传一个值 或多个
+     * @param key 可变参数，传入一个或多个原始键
      */
-    @SuppressWarnings("unchecked")
-    public static void del(String... key) {
+    public void del(String... key) {
         if (key != null && key.length > 0) {
             if (key.length == 1) {
+                // 单个键删除
                 redisTemplate.delete(getPrefixedKey(key[0]));
             } else {
-                redisTemplate.delete((Collection<String>) CollectionUtils.arrayToList(key));
+                // 批量删除：修复类型转换问题
+                // 使用Collectors.toList()确保类型正确
+                Collection<String> prefixedKeys = new ArrayList<>();
+                for (String k : key) {
+                    prefixedKeys.add(getPrefixedKey(k));
+                }
+                redisTemplate.delete(prefixedKeys);
             }
         }
     }
 
-    // ============================String=============================
+    // ============================= String类型操作 =============================
 
     /**
-     * 普通缓存获取
+     * 获取String类型的缓存值
      *
-     * @param key 键
-     * @return 值
+     * @param key 原始键
+     * @return 缓存值（未命中返回null）
      */
-    public static Object get(String key) {
+    public Object get(String key) {
         return key == null ? null : redisTemplate.opsForValue().get(getPrefixedKey(key));
     }
 
     /**
-     * 普通缓存放入
+     * 存储String类型的缓存
      *
-     * @param key   键
-     * @param value 值
-     * @return true成功 false失败
+     * @param key   原始键
+     * @param value 值（支持任意可序列化的对象，如String、实体类等）
+     * @return 操作是否成功
      */
-    public static boolean set(String key, Object value) {
+    public boolean set(String key, Object value) {
         try {
             redisTemplate.opsForValue().set(getPrefixedKey(key), value);
             return true;
@@ -132,23 +161,22 @@ public class RedisUtil {
             e.printStackTrace();
             return false;
         }
-
     }
 
     /**
-     * 普通缓存放入并设置时间
+     * 存储String类型的缓存并设置过期时间
      *
-     * @param key   键
+     * @param key   原始键
      * @param value 值
-     * @param time  时间(秒) time要大于0 如果time小于等于0 将设置无限期
-     * @return true成功 false 失败
+     * @param time  过期时间（秒），<=0时永久有效
+     * @return 操作是否成功
      */
-    public static boolean set(String key, Object value, long time) {
+    public boolean set(String key, Object value, long time) {
         try {
             if (time > 0) {
                 redisTemplate.opsForValue().set(getPrefixedKey(key), value, time, TimeUnit.SECONDS);
             } else {
-                set(key, value);
+                set(key, value); // 调用无过期时间的set方法
             }
             return true;
         } catch (Exception e) {
@@ -158,65 +186,72 @@ public class RedisUtil {
     }
 
     /**
-     * 递增
+     * 自增操作（原子操作，线程安全）
+     * 应用场景：计数器（如文章阅读量、订单编号生成）
      *
-     * @param key   键
-     * @param delta 要增加几(大于0)
-     * @return
+     * @param key   原始键
+     * @param delta 递增步长（必须>0）
+     * @return 递增后的值
+     * @throws RuntimeException 当步长<=0时抛出
      */
-    public static long incr(String key, long delta) {
-        if (delta < 0) {
+    public long incr(String key, long delta) {
+        if (delta <= 0) {
             throw new RuntimeException("递增因子必须大于0");
         }
         return redisTemplate.opsForValue().increment(getPrefixedKey(key), delta);
     }
 
     /**
-     * 递减
+     * 自减操作（原子操作，线程安全）
+     * 应用场景：库存扣减等
      *
-     * @param key   键
-     * @param delta 要减少几(小于0)
-     * @return
+     * @param key   原始键
+     * @param delta 递减步长（必须>0）
+     * @return 递减后的值
+     * @throws RuntimeException 当步长<=0时抛出
      */
-    public static long decr(String key, long delta) {
-        if (delta < 0) {
+    public long decr(String key, long delta) {
+        if (delta <= 0) {
             throw new RuntimeException("递减因子必须大于0");
         }
+        // Redis的increment方法支持负数步长（等价于递减）
         return redisTemplate.opsForValue().increment(getPrefixedKey(key), -delta);
     }
 
-    // ================================Map=================================
+    // ============================= Hash类型操作 =============================
 
     /**
-     * HashGet
+     * 获取Hash类型中指定字段的值
+     * 应用场景：存储对象的多个属性（如用户信息：id、name、age）
      *
-     * @param key  键 不能为null
-     * @param item 项 不能为null
-     * @return 值
+     * @param key  原始键（Hash表的键）
+     * @param item 字段名（Hash表中的字段）
+     * @param <T>  返回值类型
+     * @return 字段值（未命中返回null）
      */
-    public static <T> T hget(String key, String item) {
+    public <T> T hget(String key, String item) {
         HashOperations<String, String, T> opsForHash = redisTemplate.opsForHash();
         return opsForHash.get(getPrefixedKey(key), item);
     }
 
     /**
-     * 获取hashKey对应的所有键值
+     * 获取Hash类型中所有字段和值
      *
-     * @param key 键
-     * @return 对应的多个键值
+     * @param key 原始键
+     * @return 包含所有字段和值的Map
      */
-    public static Map<Object, Object> hmget(String key) {
+    public Map<Object, Object> hmget(String key) {
         return redisTemplate.opsForHash().entries(getPrefixedKey(key));
     }
 
     /**
-     * HashSet
+     * 批量存储Hash类型的字段和值
      *
-     * @param key 键
-     * @param map 对应多个键值
-     * @return true 成功 false 失败
+     * @param key 原始键
+     * @param map 包含多个字段和值的Map
+     * @return 操作是否成功
      */
-    public static boolean hmset(String key, Map<String, Object> map) {
+    public boolean hmset(String key, Map<String, Object> map) {
         try {
             redisTemplate.opsForHash().putAll(getPrefixedKey(key), map);
             return true;
@@ -227,16 +262,58 @@ public class RedisUtil {
     }
 
     /**
-     * HashSet 并设置时间
+     * 批量存储Hash类型的字段和值并设置过期时间
      *
-     * @param key  键
-     * @param map  对应多个键值
-     * @param time 时间(秒)
-     * @return true成功 false失败
+     * @param key  原始键
+     * @param map  字段和值的Map
+     * @param time 过期时间（秒）
+     * @return 操作是否成功
      */
-    public static boolean hmset(String key, Map<String, Object> map, long time) {
+    public boolean hmset(String key, Map<String, Object> map, long time) {
         try {
             redisTemplate.opsForHash().putAll(getPrefixedKey(key), map);
+            if (time > 0) {
+                expire(key, time); // 调用通用的过期时间设置方法
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 存储Hash类型中单个字段和值
+     *
+     * @param key   原始键
+     * @param item  字段名
+     * @param value 字段值
+     * @param <T>   字段值类型
+     * @return 操作是否成功
+     */
+    public <T> boolean hset(String key, String item, T value) {
+        try {
+            redisTemplate.opsForHash().put(getPrefixedKey(key), item, value);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 存储Hash类型中单个字段和值并设置过期时间
+     *
+     * @param key   原始键
+     * @param item  字段名
+     * @param value 字段值
+     * @param time  过期时间（秒）
+     * @param <T>   字段值类型
+     * @return 操作是否成功
+     */
+    public <T> boolean hset(String key, String item, T value, long time) {
+        try {
+            redisTemplate.opsForHash().put(getPrefixedKey(key), item, value);
             if (time > 0) {
                 expire(key, time);
             }
@@ -248,99 +325,60 @@ public class RedisUtil {
     }
 
     /**
-     * 向一张hash表中放入数据,如果不存在将创建
+     * 删除Hash类型中的指定字段
      *
-     * @param key   键
-     * @param item  项
-     * @param value 值
-     * @return true 成功 false失败
+     * @param key  原始键
+     * @param item 可变参数，传入一个或多个字段名
      */
-    public static <T> boolean hset(String key, String item, T value) {
-        try {
-            redisTemplate.opsForHash().put(getPrefixedKey(key), item, value);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * 向一张hash表中放入数据,如果不存在将创建
-     *
-     * @param key   键
-     * @param item  项
-     * @param value 值
-     * @param time  时间(秒) 注意:如果已存在的hash表有时间,这里将会替换原有的时间
-     * @return true 成功 false失败
-     */
-    public static <T> boolean hset(String key, String item, T value, long time) {
-        try {
-            redisTemplate.opsForHash().put(getPrefixedKey(key), item, value);
-            if (time > 0) {
-                expire(key, time);
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * 删除hash表中的值
-     *
-     * @param key  键 不能为null
-     * @param item 项 可以使多个 不能为null
-     */
-    public static void hdel(String key, Object... item) {
+    public void hdel(String key, Object... item) {
         redisTemplate.opsForHash().delete(getPrefixedKey(key), item);
     }
 
     /**
-     * 判断hash表中是否有该项的值
+     * 判断Hash类型中是否存在指定字段
      *
-     * @param key  键 不能为null
-     * @param item 项 不能为null
-     * @return true 存在 false不存在
+     * @param key  原始键
+     * @param item 字段名
+     * @return true=存在，false=不存在
      */
-    public static boolean hHasKey(String key, String item) {
+    public boolean hHasKey(String key, String item) {
         return redisTemplate.opsForHash().hasKey(getPrefixedKey(key), item);
     }
 
     /**
-     * hash递增 如果不存在,就会创建一个 并把新增后的值返回
+     * Hash字段值自增（原子操作）
      *
-     * @param key  键
-     * @param item 项
-     * @param by   要增加几(大于0)
-     * @return
+     * @param key  原始键
+     * @param item 字段名
+     * @param by   递增步长（>0）
+     * @return 递增后的值
      */
-    public static double hincr(String key, String item, double by) {
+    public double hincr(String key, String item, double by) {
         return redisTemplate.opsForHash().increment(getPrefixedKey(key), item, by);
     }
 
     /**
-     * hash递减
+     * Hash字段值自减（原子操作）
      *
-     * @param key  键
-     * @param item 项
-     * @param by   要减少记(小于0)
-     * @return
+     * @param key  原始键
+     * @param item 字段名
+     * @param by   递减步长（>0）
+     * @return 递减后的值
      */
-    public static double hdecr(String key, String item, double by) {
+    public double hdecr(String key, String item, double by) {
         return redisTemplate.opsForHash().increment(getPrefixedKey(key), item, -by);
     }
 
-    // ============================set=============================
+    // ============================= Set类型操作 =============================
 
     /**
-     * 根据key获取Set中的所有值
+     * 获取Set类型中的所有元素
+     * 应用场景：存储不重复的集合（如用户标签、好友列表）
      *
-     * @param key 键
-     * @return
+     * @param key 原始键
+     * @return 包含所有元素的Set集合
      */
-    public static Set<Object> sGet(String key) {
+    public Set<Object> sGet(String key) {
         try {
             return redisTemplate.opsForSet().members(getPrefixedKey(key));
         } catch (Exception e) {
@@ -350,13 +388,13 @@ public class RedisUtil {
     }
 
     /**
-     * 根据value从一个set中查询,是否存在
+     * 判断Set类型中是否包含指定元素
      *
-     * @param key   键
-     * @param value 值
-     * @return true 存在 false不存在
+     * @param key   原始键
+     * @param value 元素值
+     * @return true=包含，false=不包含
      */
-    public static boolean sHasKey(String key, Object value) {
+    public boolean sHasKey(String key, Object value) {
         try {
             return redisTemplate.opsForSet().isMember(getPrefixedKey(key), value);
         } catch (Exception e) {
@@ -366,13 +404,13 @@ public class RedisUtil {
     }
 
     /**
-     * 将数据放入set缓存
+     * 向Set类型中添加元素
      *
-     * @param key    键
-     * @param values 值 可以是多个
-     * @return 成功个数
+     * @param key    原始键
+     * @param values 可变参数，传入一个或多个元素
+     * @return 成功添加的元素个数（已存在的元素不会重复添加）
      */
-    public static long sSet(String key, Object... values) {
+    public long sSet(String key, Object... values) {
         try {
             return redisTemplate.opsForSet().add(getPrefixedKey(key), values);
         } catch (Exception e) {
@@ -382,18 +420,19 @@ public class RedisUtil {
     }
 
     /**
-     * 将set数据放入缓存
+     * 向Set类型中添加元素并设置过期时间
      *
-     * @param key    键
-     * @param time   时间(秒)
-     * @param values 值 可以是多个
-     * @return 成功个数
+     * @param key    原始键
+     * @param time   过期时间（秒）
+     * @param values 可变参数，传入一个或多个元素
+     * @return 成功添加的元素个数
      */
-    public static long sSetAndTime(String key, long time, Object... values) {
+    public long sSetAndTime(String key, long time, Object... values) {
         try {
             Long count = redisTemplate.opsForSet().add(getPrefixedKey(key), values);
-            if (time > 0)
+            if (time > 0) {
                 expire(key, time);
+            }
             return count;
         } catch (Exception e) {
             e.printStackTrace();
@@ -402,12 +441,12 @@ public class RedisUtil {
     }
 
     /**
-     * 获取set缓存的长度
+     * 获取Set类型的元素个数
      *
-     * @param key 键
-     * @return
+     * @param key 原始键
+     * @return 元素个数
      */
-    public static long sGetSetSize(String key) {
+    public long sGetSetSize(String key) {
         try {
             return redisTemplate.opsForSet().size(getPrefixedKey(key));
         } catch (Exception e) {
@@ -417,32 +456,33 @@ public class RedisUtil {
     }
 
     /**
-     * 移除值为value的
+     * 从Set类型中移除指定元素
      *
-     * @param key    键
-     * @param values 值 可以是多个
-     * @return 移除的个数
+     * @param key    原始键
+     * @param values 可变参数，传入一个或多个元素
+     * @return 成功移除的元素个数
      */
-    public static long setRemove(String key, Object... values) {
+    public long setRemove(String key, Object... values) {
         try {
-            Long count = redisTemplate.opsForSet().remove(getPrefixedKey(key), values);
-            return count;
+            return redisTemplate.opsForSet().remove(getPrefixedKey(key), values);
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
-    // ===============================list=================================
+
+    // ============================= List类型操作 =============================
 
     /**
-     * 获取list缓存的内容
+     * 获取List类型中指定范围的元素
+     * 应用场景：消息队列、排行榜等
      *
-     * @param key   键
-     * @param start 开始
-     * @param end   结束 0 到 -1代表所有值
-     * @return
+     * @param key   原始键
+     * @param start 起始索引（0表示第一个元素）
+     * @param end   结束索引（-1表示最后一个元素）
+     * @return 包含指定范围元素的List
      */
-    public static List<Object> lGet(String key, long start, long end) {
+    public List<Object> lGet(String key, long start, long end) {
         try {
             return redisTemplate.opsForList().range(getPrefixedKey(key), start, end);
         } catch (Exception e) {
@@ -452,12 +492,12 @@ public class RedisUtil {
     }
 
     /**
-     * 获取list缓存的长度
+     * 获取List类型的长度
      *
-     * @param key 键
-     * @return
+     * @param key 原始键
+     * @return 列表长度
      */
-    public static long lGetListSize(String key) {
+    public long lGetListSize(String key) {
         try {
             return redisTemplate.opsForList().size(getPrefixedKey(key));
         } catch (Exception e) {
@@ -467,13 +507,13 @@ public class RedisUtil {
     }
 
     /**
-     * 通过索引 获取list中的值
+     * 通过索引获取List类型中的元素
      *
-     * @param key   键
-     * @param index 索引 index>=0时， 0 表头，1 第二个元素，依次类推；index<0时，-1，表尾，-2倒数第二个元素，依次类推
-     * @return
+     * @param key   原始键
+     * @param index 索引（正数：从头部开始；负数：从尾部开始，-1表示最后一个）
+     * @return 对应索引的元素
      */
-    public static Object lGetIndex(String key, long index) {
+    public Object lGetIndex(String key, long index) {
         try {
             return redisTemplate.opsForList().index(getPrefixedKey(key), index);
         } catch (Exception e) {
@@ -483,13 +523,13 @@ public class RedisUtil {
     }
 
     /**
-     * 将list放入缓存
+     * 向List类型的尾部添加一个元素（右压栈）
      *
-     * @param key   键
-     * @param value 值
-     * @return
+     * @param key   原始键
+     * @param value 元素值
+     * @return 操作是否成功
      */
-    public static boolean lSet(String key, Object value) {
+    public boolean lSet(String key, Object value) {
         try {
             redisTemplate.opsForList().rightPush(getPrefixedKey(key), value);
             return true;
@@ -500,18 +540,19 @@ public class RedisUtil {
     }
 
     /**
-     * 将list放入缓存
+     * 向List类型的尾部添加一个元素并设置过期时间
      *
-     * @param key   键
-     * @param value 值
-     * @param time  时间(秒)
-     * @return
+     * @param key   原始键
+     * @param value 元素值
+     * @param time  过期时间（秒）
+     * @return 操作是否成功
      */
-    public static boolean lSet(String key, Object value, long time) {
+    public boolean lSet(String key, Object value, long time) {
         try {
             redisTemplate.opsForList().rightPush(getPrefixedKey(key), value);
-            if (time > 0)
+            if (time > 0) {
                 expire(key, time);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -520,13 +561,13 @@ public class RedisUtil {
     }
 
     /**
-     * 将list放入缓存
+     * 向List类型的尾部批量添加元素
      *
-     * @param key   键
-     * @param value 值
-     * @return
+     * @param key   原始键
+     * @param value 包含多个元素的List
+     * @return 操作是否成功
      */
-    public static boolean lSet(String key, List<Object> value) {
+    public boolean lSet(String key, List<Object> value) {
         try {
             redisTemplate.opsForList().rightPushAll(getPrefixedKey(key), value);
             return true;
@@ -537,18 +578,19 @@ public class RedisUtil {
     }
 
     /**
-     * 将list放入缓存
+     * 向List类型的尾部批量添加元素并设置过期时间
      *
-     * @param key   键
-     * @param value 值
-     * @param time  时间(秒)
-     * @return
+     * @param key   原始键
+     * @param value 包含多个元素的List
+     * @param time  过期时间（秒）
+     * @return 操作是否成功
      */
-    public static boolean lSet(String key, List<Object> value, long time) {
+    public boolean lSet(String key, List<Object> value, long time) {
         try {
             redisTemplate.opsForList().rightPushAll(getPrefixedKey(key), value);
-            if (time > 0)
+            if (time > 0) {
                 expire(key, time);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -557,14 +599,14 @@ public class RedisUtil {
     }
 
     /**
-     * 根据索引修改list中的某条数据
+     * 根据索引修改List类型中的元素
      *
-     * @param key   键
+     * @param key   原始键
      * @param index 索引
-     * @param value 值
-     * @return
+     * @param value 新值
+     * @return 操作是否成功
      */
-    public static boolean lUpdateIndex(String key, long index, Object value) {
+    public boolean lUpdateIndex(String key, long index, Object value) {
         try {
             redisTemplate.opsForList().set(getPrefixedKey(key), index, value);
             return true;
@@ -575,22 +617,29 @@ public class RedisUtil {
     }
 
     /**
-     * 移除N个值为value
+     * 从List类型中移除指定数量的元素
      *
-     * @param key   键
-     * @param count 移除多少个
-     * @param value 值
-     * @return 移除的个数
+     * @param key   原始键
+     * @param count 移除数量（正数：从头部开始；负数：从尾部开始）
+     * @param value 要移除的元素值
+     * @return 成功移除的元素个数
      */
-    public static long lRemove(String key, long count, Object value) {
+    public long lRemove(String key, long count, Object value) {
         try {
-            Long remove = redisTemplate.opsForList().remove(getPrefixedKey(key), count, value);
-            return remove;
+            return redisTemplate.opsForList().remove(getPrefixedKey(key), count, value);
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
 
+    /**
+     * 动态修改键前缀（线程安全）
+     * 注意：修改后新的键会使用新前缀，但已存在的键不受影响
+     *
+     * @param newPrefix 新的前缀
+     */
+    public synchronized void updateKeyPrefix(String newPrefix) {
+        this.keyPrefix = newPrefix;
+    }
 }
-

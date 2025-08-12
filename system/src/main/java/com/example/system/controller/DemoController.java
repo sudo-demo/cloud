@@ -21,8 +21,8 @@ import javax.annotation.Resource;
 @Api(value = "测试",tags="测试")
 public class DemoController {
 
-//    @Resource
-//    ProxyUtils proxyUtils;
+    @Resource
+    ProxyUtils proxyUtils;
 
     @Resource
     SystemRoleService systemRoleService;
@@ -37,19 +37,12 @@ public class DemoController {
         systemRoleDto.setSort(1);
         systemRoleDto.setRemark("测试");
 
-        ProxyUtils.setProxyInterceptor(new RoleProxyInterceptor());
-        ProxyUtils.createProxy(SystemRoleService.class).created(systemRoleDto);
+        proxyUtils.createProxy(SystemRoleService.class,new RoleProxyInterceptor()).created(systemRoleDto);
 
         SystemUserDto systemUserDto = new SystemUserDto();
-        ProxyUtils.createProxy(SystemUserService.class).created(systemUserDto);
+        proxyUtils.createProxy(SystemUserService.class).created(systemUserDto);
 
-//        proxyUtils.setImplClassName(SystemRoleServiceImpl.class)
-//                .createProxy(SystemRoleService.class)
-//                .created(systemRoleDto);
 
-//        proxyUtils.createProxy(SystemRoleService.class).created(systemRoleDto);
-
-//        systemRoleService.created(systemRoleDto);
         return Result.success();
     }
 }

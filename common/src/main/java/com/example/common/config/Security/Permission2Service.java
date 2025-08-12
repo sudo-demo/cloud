@@ -1,13 +1,18 @@
 package com.example.common.config.Security;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.example.common.config.Mybatis.DataScopeInterceptor;
 import com.example.common.domain.VRoleApi;
-import com.example.common.util.JwtUtil;
 import com.example.common.util.RedisUtil;
+import com.example.common.util.SecurityUtil;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -15,101 +20,155 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 
-@Data
+/**
+ *
+ */
 @Component
 @Accessors(chain = true)
+@Slf4j
 public class Permission2Service {
 
-    /**
-     * 角色id
-     */
-    private Set<Long> roleIds;
+    @Resource
+    RedisUtil redisUtil;
 
-    /**
-     * 模块/控制器
-     */
-    private String appController;
+    private static final ThreadLocal<PermissionContext> CONTEXT_HOLDER = new ThreadLocal<>();
 
-    /**
-     * 方法
-     */
-    private String action;
+    public void clearContext() {
+        CONTEXT_HOLDER.remove();
+    }
 
-    /**
-     * 当前所有角色的控制器权限
-     */
-    private Map<Long, VRoleApi> currentControllerRoleAuth = new HashMap<>();
+    public PermissionContext getContext() {
+        PermissionContext ctx = CONTEXT_HOLDER.get();
+        if (ctx == null) {
+            ctx = new PermissionContext();
+            CONTEXT_HOLDER.set(ctx);
+        }
+        return ctx;
+    }
 
+    public void setContext(PermissionContext context) {
+        CONTEXT_HOLDER.set(context);
+    }
 
-    /**
-     * 当前所有角色的方法权限、不随 $appController 改变
-     */
-    private  Map<Long,VRoleApi> currentActionRoleAuth = new HashMap<>();
+    @Data
+    @ApiModel("权限实体")
+    public static class PermissionContext {
 
-    /**
-     * 用户当前所有角色
-     */
-    private Set<Long> roleId = new HashSet<>();
+        @ApiModelProperty("所有角色id")
+        private Set<Long> roleIds;
 
-    @Value("${spring.application.name}")
-    private String app;
+        @ApiModelProperty("当前角色id")
+        private Long roleId;
+
+        @ApiModelProperty("模块/控制器")
+        private String appController;
+
+        @ApiModelProperty("方法")
+        private String action;
+
+        @ApiModelProperty("接口名称")
+        private String apiName;
+
+        @ApiModelProperty("当前所有角色的控制器权限")
+        private Map<String, Map<String, VRoleApi>> currentControllerRoleAuth = new HashMap<>();
+
+        @ApiModelProperty("当前所有角色的方法权限")
+        private Map<String, VRoleApi> currentActionRoleAuth = new HashMap<>();
+
+        @ApiModelProperty("mapper")
+        private String mappedStatementId;
+
+        @ApiModelProperty("主表的别名")
+        private String masterAlias;
+
+        @ApiModelProperty("权限sql")
+        private String conditions;
+
+        @ApiModelProperty("处理类")
+        private Class<?> clazz = DataScopeInterceptor.class;
+
+        @ApiModelProperty("处理方法")
+        private String callMethod = "handleDataScope";
+
+        @ApiModelProperty("拼装语句后")
+        private BiFunction<VRoleApi, List<List<String>>, List<List<String>>> afterFunction;
+
+    }
 
     @Resource
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
-    @Resource
-    JwtUtil jwtUtil;
+    @Value("${spring.application.name}")
+    private String appModel;//模块
 
     /**
-     * 权限sql
+     * 初始化之前清空参数
      */
-    private String conditions;
-
+    public void clearDataScope(HttpServletRequest request) {
+        clearContext();
+        getContext().setRoleIds(SecurityUtil.getRoleIds());
+        getContext().setRoleId(SecurityUtil.getRoleId());
+        try {
+            HandlerExecutionChain executionChain = requestMappingHandlerMapping.getHandler(request);
+            if (executionChain != null && (executionChain.getHandler() instanceof HandlerMethod)) {
+                HandlerMethod handlerMethod = (HandlerMethod) executionChain.getHandler();
+                String controller = handlerMethod.getBeanType().getSimpleName().replace("Controller", "");
+                getContext().setAppController(appModel + "/" + controller);//控制器名称
+                getContext().setAction(handlerMethod.getMethod().getName());//方法名称
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 验证接口权限
      */
-    public boolean verifyAuth()
-    {
-        System.out.println("控制器权限："+this.currentControllerRoleAuth);
-        System.out.println("方法权限："+this.currentActionRoleAuth);
-        if(ObjectUtil.isEmpty(this.currentActionRoleAuth)){
+    public boolean verifyAuth(HttpServletRequest request) {
+        clearDataScope(request);
+        init();
+        if (CollectionUtils.isEmpty(getContext().getCurrentActionRoleAuth())) {
             return false;
         }
         return true;
     }
 
+    /**
+     * 权限初始化
+     */
+    public void init() {
+        VRoleApi cacheMapValue = redisUtil.hget("role_" + getContext().getRoleId(), getContext().getAppController());
+        if (cacheMapValue != null) {
+            getContext().setApiName(cacheMapValue.getChildren().get(getContext().getAction()).getApiName());
+            Map<String, Map<String, VRoleApi>> currentControllerRoleAuth = new HashMap<>();
+            currentControllerRoleAuth.put(cacheMapValue.getAppModel(), cacheMapValue.getChildren());
+            getContext().getCurrentControllerRoleAuth().putAll(currentControllerRoleAuth);
+            if (ObjectUtil.isNotNull(cacheMapValue.getChildren().get(getContext().getAction()))) {
+                Map<String, VRoleApi> currentActionRoleAuth = new HashMap<>();
+                currentActionRoleAuth.put(getContext().getAction(), cacheMapValue.getChildren().get(getContext().getAction()));
+                getContext().getCurrentActionRoleAuth().putAll(currentActionRoleAuth);
+            }
+        }
+    }
 
-//    public void init(HttpServletRequest request) throws Exception {
-//        this.currentControllerRoleAuth = new HashMap<>();
-//        this.currentActionRoleAuth = new HashMap<>();
-//        this.roleIds = jwtUtil.getRoleIds();
-//        this.conditions = null;
-//        HandlerExecutionChain executionChain = requestMappingHandlerMapping.getHandler(request);
-//        if (executionChain != null && (executionChain.getHandler() instanceof HandlerMethod)) {
-//            HandlerMethod handlerMethod = (HandlerMethod) executionChain.getHandler();
-//            String controller = handlerMethod.getBeanType().getSimpleName().replace("Controller", "");
-//
-//            this.appController = app + "/" + controller;
-//            this.action = handlerMethod.getMethod().getName();
-//            System.out.println("角色：" + this.roleIds);
-//            System.out.println("请求的模块/控制器：" + this.appController);
-//            System.out.println("请求的方法：" + this.action);
-//        }
-//        for (Long roleId : this.roleIds) {
-//            VRoleApi cacheMapValue = RedisUtil.hget("role_" + roleId, this.appController);
-//            if(cacheMapValue == null)  continue;
-//            currentControllerRoleAuth.put(roleId,cacheMapValue);
-//            if(cacheMapValue.getChildren().get(this.action) != null){
-//                currentActionRoleAuth.put(roleId,cacheMapValue.getChildren().get(this.action));
-//            }
-//        }
-//
-//
-//
-//    }
+
+
+    public void dataScope(String action, String appController) {
+        Set<Long> roleIdSet = getContext().getRoleIds();
+        getContext().setConditions(null);
+        getContext().setRoleIds(roleIdSet);
+        getContext().setAction(action);
+        if (!getContext().getAppController().equals(appController)) {
+            getContext().setAppController(appController);
+            init();
+        }
+    }
+
+
 }

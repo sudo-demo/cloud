@@ -9,11 +9,16 @@ import org.jetbrains.annotations.Contract;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 
 @Component
 public class JwtUtil {
+
+    @Resource
+    RedisUtil redisUtil;
+
     private static final String CLAIM_KEY_USERNAME = "sub";// JWT中的用户标识
     private static final String TOKEN_ID = "ID";// JWT中的token ID
     private static final String ACCESS_TOKEN = "login_tokens:";// token在Redis中的key前缀
@@ -95,8 +100,7 @@ public class JwtUtil {
      * 刷新token，存储用户信息到Redis
      */
     public void refreshToken(User user, String tokenId) {
-//        RedisUtil.set(getTokenKey(tokenId), JSON.toJSONString(user, JSONWriter.Feature.WriteMapNullValue), expiration);
-        RedisUtil.set(getTokenKey(tokenId),user, expiration);
+        redisUtil.set(getTokenKey(tokenId),user, expiration);
     }
 
     /**
