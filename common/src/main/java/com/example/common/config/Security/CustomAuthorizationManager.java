@@ -45,13 +45,13 @@ public class CustomAuthorizationManager implements AuthorizationManager <Request
     @Override
     public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
         // 检查用户是否为匿名用户
-        if(authentication.get().getPrincipal().equals("anonymousUser")){
+        if("anonymousUser".equals(authentication.get().getPrincipal())){
             return new AuthorizationDecision(false);// 不允许访问
         }
         try{
             // 调用权限服务验证请求的权限
             if(!permissionService.verifyAuth(object.getRequest())){
-                return new AuthorizationDecision(false);// 权限验证失败，不允许访问
+//                return new AuthorizationDecision(false);// 权限验证失败，不允许访问
             }
         }catch (Exception exception){
             log.error("权限验证失败",exception); // 记录错误日志

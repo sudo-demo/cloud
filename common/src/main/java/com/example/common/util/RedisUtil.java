@@ -3,6 +3,9 @@ package com.example.common.util;
 import com.example.common.config.RedisConfig;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +30,13 @@ public class RedisUtil {
      */
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+
+    /**
+     * 直接注入 Spring 提供的 StringRedisTemplate
+     * 操作字符串
+     */
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 键前缀（用于区分不同业务/环境的Redis键）
@@ -641,5 +651,74 @@ public class RedisUtil {
      */
     public synchronized void updateKeyPrefix(String newPrefix) {
         this.keyPrefix = newPrefix;
+    }
+
+
+    // Lua脚本：加锁（原子操作）
+    private static final String LOCK_SCRIPT =
+            "if redis.call('setnx', KEYS[1], ARGV[1]) == 1 then " +
+                    "   return redis.call('pexpire', KEYS[1], ARGV[2]) " +
+                    "else " +
+                    "   return 0 " +
+                    "end";
+
+
+    private static final RedisScript<Long> LOCK_SCRIPT_INSTANCE =
+            new DefaultRedisScript<>(LOCK_SCRIPT, Long.class);
+
+    /**
+     * 尝试加锁（原子操作）
+     * 业务意义：在分布式环境中实现互斥访问，防止多个实例同时操作同一资源
+     *
+     * @param key        锁的键（业务标识，如"order:lock:1001"）
+     * @param value      锁的值（建议使用UUID，用于安全解锁）
+     * @param expireTime 锁的过期时间（防止死锁）
+     * @param timeUnit   时间单位
+     * @return true-加锁成功，false-加锁失败（锁已被其他客户端持有）
+     */
+    public boolean tryLock(String key, String value, long expireTime, TimeUnit timeUnit) {
+        try {
+            Long result = redisTemplate.execute(LOCK_SCRIPT_INSTANCE,
+                    Collections.singletonList(getPrefixedKey(key)),
+                    value,
+                    timeUnit.toMillis(expireTime)
+            );
+            return Objects.equals(result, 1L);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 记录日志，但不要抛出异常影响业务
+            return false;
+        }
+    }
+
+    // Lua脚本：解锁（原子操作，只有值匹配时才删除）
+    private static final String UNLOCK_SCRIPT =
+            "if redis.call('get', KEYS[1]) == ARGV[1] then " +
+                    "   return redis.call('del', KEYS[1]) " +
+                    "else " +
+                    "   return 0 " +
+                    "end";
+
+    private static final RedisScript<Long> UNLOCK_SCRIPT_INSTANCE =
+            new DefaultRedisScript<>(UNLOCK_SCRIPT, Long.class);
+
+    /**
+     * 解锁（原子操作）
+     * 业务意义：安全释放分布式锁，避免误删其他客户端的锁
+     *
+     * @param key   锁的键
+     * @param value 锁的值（必须与加锁时的值一致）
+     * @return true-解锁成功，false-解锁失败（锁不存在或值不匹配）
+     */
+    public boolean unlock(String key, String value) {
+        try {
+            Long result = stringRedisTemplate.execute(UNLOCK_SCRIPT_INSTANCE,
+                    Collections.singletonList(getPrefixedKey(key)),
+                    value);
+            return result == 1;
+        } catch (Exception e) {
+            // 记录日志
+            return false;
+        }
     }
 }
